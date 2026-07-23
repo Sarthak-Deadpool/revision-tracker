@@ -102,4 +102,12 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+// this used for getting user profile
+
+const getProfile = async (req, res) => {
+  return res.status(200).json(req.user);
+}
+
+
+
+module.exports = { registerUser, loginUser, getProfile};
