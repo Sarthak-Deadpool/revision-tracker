@@ -81,15 +81,13 @@ const getSubjectById = async (req, res) => {
       message: "Subject found",
       subject,
     });
-
   } catch (error) {
     console.error(error);
 
-    if(error.name === "CastError"){
-
-        return res.status(400).json({
-            message: "Invalid Subject Id"
-        })
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid Subject Id",
+      });
     }
 
     return res.status(500).json({
@@ -101,23 +99,22 @@ const getSubjectById = async (req, res) => {
 // to update Subject
 
 const updateSubject = async (req, res) => {
-    try {
-        const {id} = req.params;
-        const {name, color, description} = req.body;
+  try {
+    const { id } = req.params;
+    const { name, color, description } = req.body;
 
-        if(!name && !color && !description){
-            return res.status(400).json({
-                message: "At least one field require to update",
-            })
-        }
+    if (!name && !color && !description) {
+      return res.status(400).json({
+        message: "At least one field require to update",
+      });
+    }
 
-        if(name !== undefined && !name.trim()){
-            return res.status(400).json({
-                message: "Subject name can not be empty "
-            })
-        }
+    if (name !== undefined && !name.trim()) {
+      return res.status(400).json({
+        message: "Subject name can not be empty ",
+      });
+    }
 
-        
     const subject = await Subject.findOne({
       _id: id,
       user: req.user._id,
@@ -129,42 +126,39 @@ const updateSubject = async (req, res) => {
       });
     }
 
-    const updateData = {}
+    const updateData = {};
 
-    if(name !== undefined){
-        updateData.name = name;
+    if (name !== undefined) {
+      updateData.name = name;
     }
 
-    if(color !== undefined){
-        updateData.color = color;
+    if (color !== undefined) {
+      updateData.color = color;
     }
 
-    if(description !== undefined){
-        updateData.description = description;
+    if (description !== undefined) {
+      updateData.description = description;
     }
 
     Object.assign(subject, updateData);
     await subject.save();
 
     return res.status(200).json({
-        message: "Subject updated successfully",
-        subject,
-    })
+      message: "Subject updated successfully",
+      subject,
+    });
+  } catch (error) {
+    console.error(error);
 
-
-    } catch (error) {
-        console.error(error);
-
-         if(error.name === "CastError"){
-
-        return res.status(400).json({
-            message: "Invalid Subject Id"
-        })
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid Subject Id",
+      });
     }
-        return res.status(500).json({
+    return res.status(500).json({
       message: "Internal server error",
     });
-    }
-}
+  }
+};
 
-module.exports = { createSubject, getSubjects, getSubjectById, updateSubject};
+module.exports = { createSubject, getSubjects, getSubjectById, updateSubject };
