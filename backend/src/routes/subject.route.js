@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {createSubject, getSubjects, getSubjectById, updateSubject} = require("../controllers/subject.controller");
+const {createSubject, getSubjects, getSubjectById, updateSubject, deleteSubject} = require("../controllers/subject.controller");
 const {protect} = require("../middlewares/auth.middleware");
 
 
@@ -10,5 +10,6 @@ router.post("/", protect, createSubject);
 router.get("/", protect, getSubjects);
 router.get("/:id", protect, getSubjectById);
 router.patch("/:id", protect, updateSubject);
+router.delete("/:id", protect, deleteSubject);
 
 module.exports = router;

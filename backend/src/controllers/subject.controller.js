@@ -16,9 +16,9 @@ const createSubject = async (req, res) => {
 
     const subject = await Subject.create({
       user: req.user._id,
-      name,
-      color,
-      description,
+      name: name.trim(),
+      color: color.trim(),
+      description: description.trim(),
     });
 
     return res.status(201).json({
@@ -161,4 +161,43 @@ const updateSubject = async (req, res) => {
   }
 };
 
-module.exports = { createSubject, getSubjects, getSubjectById, updateSubject };
+// to delete Subject
+
+const deleteSubject = async (req, res) => {
+  
+  try{
+    const{id} = req.params;
+
+    const subject = await Subject.findOne({
+      _id: id,
+      user: req.user._id,
+    });
+
+    if (!subject) {
+      return res.status(404).json({
+        message: "Subject not found",
+      });
+    }
+
+    await subject.deleteOne();
+
+    return res.status(200).json({
+      message : "Subject deleted successfully",
+    })
+
+
+  }catch (error) {
+    console.error(error);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid Subject Id",
+      });
+    }
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+module.exports = { createSubject, getSubjects, getSubjectById, updateSubject, deleteSubject };

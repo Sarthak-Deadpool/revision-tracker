@@ -36,6 +36,10 @@ subjectSchema.index(
     },
     {
         unique:true,
+        collation: {
+            locale: "en",
+            strength: 2,
+        },
     }
 )
 
