@@ -1,6 +1,10 @@
 /** @format */
 
+const mongoose = require("mongoose");
+
 const Subject = require("../models/subject.model");
+const Topic = require("../models/topic.model");
+const Revision = require("../models/revision.model");
 
 // to create new subject
 
@@ -17,8 +21,8 @@ const createSubject = async (req, res) => {
     const subject = await Subject.create({
       user: req.user._id,
       name: name.trim(),
-      color: color.trim(),
-      description: description.trim(),
+      color: color?.trim()|| undefined,
+      description: description?.trim() || undefined,
     });
 
     return res.status(201).json({
@@ -164,14 +168,18 @@ const updateSubject = async (req, res) => {
 // to delete Subject
 
 const deleteSubject = async (req, res) => {
-  
-  try{
-    const{id} = req.params;
+  let session;
+
+  try {
+    session = await mongoose.startSession();
+    session.startTransaction();
+
+    const { id } = req.params;
 
     const subject = await Subject.findOne({
       _id: id,
       user: req.user._id,
-    });
+    }).session(session);
 
     if (!subject) {
       return res.status(404).json({
@@ -179,14 +187,38 @@ const deleteSubject = async (req, res) => {
       });
     }
 
-    await subject.deleteOne();
+    await Revision.deleteMany(
+      {
+        subject: subject._id,
+        user: req.user._id,
+      },
+      {
+        session,
+      },
+    );
+
+    await Topic.deleteMany(
+      {
+        subject: subject._id,
+        user: req.user._id,
+      },
+      {
+        session,
+      },
+    );
+
+    await subject.deleteOne({ session });
+
+    await session.commitTransaction();
 
     return res.status(200).json({
-      message : "Subject deleted successfully",
-    })
+      message: "Subject deleted successfully",
+    });
 
-
-  }catch (error) {
+  } catch (error) {
+    if (session?.inTransaction()) {
+      await session.abortTransaction();
+    }
     console.error(error);
 
     if (error.name === "CastError") {
@@ -197,7 +229,17 @@ const deleteSubject = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
+  }finally {
+  if (session) {
+    await session.endSession();
   }
 }
+};
 
-module.exports = { createSubject, getSubjects, getSubjectById, updateSubject, deleteSubject };
+module.exports = {
+  createSubject,
+  getSubjects,
+  getSubjectById,
+  updateSubject,
+  deleteSubject,
+};
