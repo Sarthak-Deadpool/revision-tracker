@@ -19,7 +19,7 @@ const completeRevisionService = async ({ revision, rating, session }) => {
     throw new Error("Topic not Found");
   }
 
-  const { nextEaseFactor, nextInterval, nextRepetition, nextScheduleDate } =
+  const { nextEaseFactor, nextInterval, nextRepetition, nextScheduledDate } =
     calculateNextRevision({
       easeFactor: topic.currentEaseFactor,
       interval: topic.currentInterval,
@@ -33,10 +33,31 @@ const completeRevisionService = async ({ revision, rating, session }) => {
   topic.currentInterval = nextInterval;
   topic.currentRepetition = nextRepetition;
 
-  topic.totalRevisions +=1  ;
+  topic.totalRevisions = nextRevisionNumber;
   topic.lastRevisedAt = revision.completedAt;
 
-  await topic.save({session});
+  await topic.save({ session });
+
+  await Revision.create(
+    [
+      {
+        user: revision.user,
+        subject: revision.subject,
+        topic: topic._id,
+
+        revisionNumber: nextRevisionNumber,
+        scheduledDate: nextScheduledDate,
+
+        completedAt: null,
+        rating: null,
+
+        easeFactor: nextEaseFactor,
+        interval: nextInterval,
+        repetition: nextRepetition,
+      },
+    ],
+    { session },
+  );
 };
 
 module.exports = { completeRevisionService };
