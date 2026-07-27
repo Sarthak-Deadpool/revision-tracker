@@ -17,9 +17,29 @@ const completeRevision = async (req, res) => {
     const { id } = req.params;
     const { rating } = req.body;
 
-    if (rating === undefined) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      await session.abortTransaction();
+
       return res.status(400).json({
-        message: "Rating is required",
+        message: "Invalid revision ID.",
+      });
+    }
+
+    const allowedRatings = ["Again", "Good", "Easy"];
+
+    if (rating === undefined) {
+      await session.abortTransaction();
+
+      return res.status(400).json({
+        message: "Rating is required.",
+      });
+    }
+
+    if (!allowedRatings.includes(rating)) {
+      await session.abortTransaction();
+
+      return res.status(400).json({
+        message: "Invalid rating.",
       });
     }
 
@@ -31,7 +51,7 @@ const completeRevision = async (req, res) => {
     if (!revision) {
       await session.abortTransaction();
 
-      return res.status(400).json({
+      return res.status(404).json({
         message: "Revision not found",
       });
     }
@@ -50,6 +70,18 @@ const completeRevision = async (req, res) => {
   } catch (error) {
     if (session?.inTransaction()) {
       await session.abortTransaction();
+    }
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid revision ID.",
+      });
     }
 
     console.error(error);
@@ -104,13 +136,14 @@ const getRevisionHistory = async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(topicId)) {
       return res.status(400).json({
-        message: "Topic ID  is required",
+        message: "Invalid topic ID",
       });
     }
 
     const topic = await Topic.findOne({
       _id: topicId,
       user: req.user._id,
+      isArchived: false,
     });
 
     if (!topic) {
@@ -128,7 +161,7 @@ const getRevisionHistory = async (req, res) => {
     }).sort({ revisionNumber: 1 });
 
     return res.status(200).json({
-      message: "History fetched",
+      message: "History fetched successfully",
       topic: {
         _id: topic._id,
         name: topic.name,
@@ -156,13 +189,14 @@ const getNextRevision = async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(topicId)) {
       return res.status(400).json({
-        message: "Topic ID  is required",
+        message: "Invalid topic ID",
       });
     }
 
     const topic = await Topic.findOne({
       _id: topicId,
       user: req.user._id,
+      isArchived: false,
     });
 
     if (!topic) {
@@ -186,12 +220,12 @@ const getNextRevision = async (req, res) => {
     return res.status(200).json({
       message: "Next revision fetched",
       topic: {
-    _id: topic._id,
-    name: topic.name,
-    difficulty: topic.difficulty,
-    masteryLevel: topic.masteryLevel,
-    totalRevisions: topic.totalRevisions,
-  },
+        _id: topic._id,
+        name: topic.name,
+        difficulty: topic.difficulty,
+        masteryLevel: topic.masteryLevel,
+        totalRevisions: topic.totalRevisions,
+      },
       nextRevision,
     });
   } catch (error) {

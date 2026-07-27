@@ -12,16 +12,30 @@ const createSubject = async (req, res) => {
   try {
     const { name, color, description } = req.body;
 
-    if (!name) {
+    if (!name || !name.trim()) {
       return res.status(400).json({
         message: "Subject name is required",
       });
     }
 
+    const trimmedName = name.trim();
+
+    if (trimmedName.length < 2) {
+      return res.status(400).json({
+        message: "Subject name must be at least 2 characters long.",
+      });
+    }
+
+    if (trimmedName.length > 50) {
+      return res.status(400).json({
+        message: "Subject name cannot exceed 50 characters.",
+      });
+    }
+
     const subject = await Subject.create({
       user: req.user._id,
-      name: name.trim(),
-      color: color?.trim()|| undefined,
+      name: trimmedName,
+      color: color?.trim() || undefined,
       description: description?.trim() || undefined,
     });
 
@@ -34,7 +48,12 @@ const createSubject = async (req, res) => {
 
     if (error.code === 11000) {
       return res.status(409).json({
-        message: "Subject already exist",
+        message: "Subject already exists",
+      });
+    }
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: error.message,
       });
     }
     return res.status(500).json({
@@ -49,10 +68,12 @@ const getSubjects = async (req, res) => {
   try {
     const subjects = await Subject.find({
       user: req.user._id,
+    }).sort({
+      createdAt: -1,
     });
 
     return res.status(200).json({
-      message: "Subjects Fetch Successfully",
+      message: "Subjects fetched successfully",
       subjects,
     });
   } catch (error) {
@@ -70,6 +91,12 @@ const getSubjectById = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid subject ID.",
+      });
+    }
+
     const subject = await Subject.findOne({
       _id: id,
       user: req.user._id,
@@ -82,7 +109,7 @@ const getSubjectById = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: "Subject found",
+      message: "Subject fetched successfully",
       subject,
     });
   } catch (error) {
@@ -90,7 +117,7 @@ const getSubjectById = async (req, res) => {
 
     if (error.name === "CastError") {
       return res.status(400).json({
-        message: "Invalid Subject Id",
+        message: "Invalid subject ID",
       });
     }
 
@@ -107,9 +134,13 @@ const updateSubject = async (req, res) => {
     const { id } = req.params;
     const { name, color, description } = req.body;
 
-    if (!name && !color && !description) {
+    if (
+      name === undefined &&
+      color === undefined &&
+      description === undefined
+    ) {
       return res.status(400).json({
-        message: "At least one field require to update",
+        message: "At least one field is required to update.",
       });
     }
 
@@ -133,15 +164,35 @@ const updateSubject = async (req, res) => {
     const updateData = {};
 
     if (name !== undefined) {
-      updateData.name = name;
+      const trimmedName = name.trim();
+
+      if (!trimmedName) {
+        return res.status(400).json({
+          message: "Subject name cannot be empty.",
+        });
+      }
+
+      if (trimmedName.length < 2) {
+        return res.status(400).json({
+          message: "Subject name must be at least 2 characters long.",
+        });
+      }
+
+      if (trimmedName.length > 50) {
+        return res.status(400).json({
+          message: "Subject name cannot exceed 50 characters.",
+        });
+      }
+
+      updateData.name = trimmedName;
     }
 
     if (color !== undefined) {
-      updateData.color = color;
+      updateData.color = color.trim();
     }
 
     if (description !== undefined) {
-      updateData.description = description;
+      updateData.description = description.trim();
     }
 
     Object.assign(subject, updateData);
@@ -153,6 +204,11 @@ const updateSubject = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "Subject already exists.",
+      });
+    }
 
     if (error.name === "CastError") {
       return res.status(400).json({
@@ -176,12 +232,19 @@ const deleteSubject = async (req, res) => {
 
     const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid subject ID.",
+      });
+    }
+
     const subject = await Subject.findOne({
       _id: id,
       user: req.user._id,
     }).session(session);
 
     if (!subject) {
+      await session.abortTransaction();
       return res.status(404).json({
         message: "Subject not found",
       });
@@ -214,7 +277,6 @@ const deleteSubject = async (req, res) => {
     return res.status(200).json({
       message: "Subject deleted successfully",
     });
-
   } catch (error) {
     if (session?.inTransaction()) {
       await session.abortTransaction();
@@ -229,11 +291,11 @@ const deleteSubject = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
-  }finally {
-  if (session) {
-    await session.endSession();
+  } finally {
+    if (session) {
+      await session.endSession();
+    }
   }
-}
 };
 
 module.exports = {

@@ -16,7 +16,7 @@ const completeRevisionService = async ({ revision, rating, session }) => {
   }).session(session);
 
   if (!topic) {
-    throw new Error("Topic not Found");
+    throw new Error("Topic not found");
   }
 
   const { nextEaseFactor, nextInterval, nextRepetition, nextScheduledDate } =

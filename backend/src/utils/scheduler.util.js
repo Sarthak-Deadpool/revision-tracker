@@ -30,18 +30,17 @@ const calculateNextRevision = ({
       break;
 
     case "Easy":
+      nextRepetition = repetition + 1;
 
-    nextRepetition = repetition+1;
-
-    if(nextRepetition === 1){
+      if (nextRepetition === 1) {
         nextInterval = 3;
-    }else if(nextRepetition === 2){
+      } else if (nextRepetition === 2) {
         nextInterval = 7;
-    }else {
-        nextInterval = Math.round(interval* (easeFactor*0.15));
-    }
+      } else {
+        nextInterval = Math.round(interval * (easeFactor + 0.15));
+      }
 
-    nextEaseFactor = easeFactor + 0.15;
+      nextEaseFactor = Math.min(easeFactor + 0.15);
       break;
 
     default:
@@ -50,9 +49,7 @@ const calculateNextRevision = ({
 
   const nextScheduledDate = new Date();
 
-  nextScheduledDate.setDate(
-    nextScheduledDate.getDate()+nextInterval
-  )
+  nextScheduledDate.setDate(nextScheduledDate.getDate() + nextInterval);
 
   return {
     nextEaseFactor,

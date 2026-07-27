@@ -5,7 +5,6 @@ require("dotenv").config();
 const app = require("./src/App");
 const connectDB = require("./src/config/db");
 
-
 const PORT = process.env.PORT;
 
 async function startServer() {

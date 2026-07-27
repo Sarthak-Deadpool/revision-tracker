@@ -31,6 +31,12 @@ const revisionSchema = new mongoose.Schema(
     completedAt: {
       type: Date,
       default: null,
+      validate: {
+        validator(value) {
+          return value === null || value >= this.scheduledDate;
+        },
+        message: "Completion date cannot be before scheduled date.",
+      },
     },
     rating: {
       type: String,
@@ -40,8 +46,9 @@ const revisionSchema = new mongoose.Schema(
     easeFactor: {
       type: Number,
       required: true,
-      min: 1.3,
       default: 2.5,
+      min: 1.3,
+      max: 3,
     },
 
     interval: {
@@ -68,10 +75,15 @@ revisionSchema.index({
   scheduledDate: 1,
 });
 
-revisionSchema.index({
-  topic: 1,
-  revisionNumber: 1,
-});
+revisionSchema.index(
+  {
+    topic: 1,
+    revisionNumber: 1,
+  },
+  {
+    unique: true,
+  },
+);
 revisionSchema.index({
   topic: 1,
   completedAt: 1,

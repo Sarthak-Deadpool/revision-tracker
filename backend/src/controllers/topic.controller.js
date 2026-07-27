@@ -16,6 +16,30 @@ const createTopic = async (req, res) => {
     });
   }
 
+  const trimmedName = name.trim();
+
+  if (trimmedName.length < 2) {
+    return res.status(400).json({
+      message: "Topic name must be at least 2 characters long.",
+    });
+  }
+
+  if (trimmedName.length > 50) {
+    return res.status(400).json({
+      message: "Topic name cannot exceed 50 characters.",
+    });
+  }
+
+  const trimmedDifficulty = difficulty.trim();
+
+  const allowedDifficulty = ["Easy", "Medium", "Hard"];
+
+  if (!allowedDifficulty.includes(trimmedDifficulty)) {
+    return res.status(400).json({
+      message: "Invalid difficulty level.",
+    });
+  }
+
   let session;
   try {
     session = await mongoose.startSession();
@@ -38,8 +62,8 @@ const createTopic = async (req, res) => {
         {
           user: req.user._id,
           subject: existingSubject._id,
-          name: name.trim(),
-          difficulty: difficulty.trim(),
+          name: trimmedName,
+          difficulty: trimmedDifficulty,
           notes: notes?.trim() || undefined,
 
           currentEaseFactor: 2.5,
@@ -95,6 +119,12 @@ const createTopic = async (req, res) => {
       });
     }
 
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       message: "Internal server error",
     });
@@ -112,10 +142,12 @@ const getTopics = async (req, res) => {
     const topics = await Topic.find({
       user: req.user._id,
       isArchived: false,
-    });
+    })
+      .populate("subject", "name color")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({
-      message: "Topic fetched successfully",
+      message: "Topics fetched successfully",
       count: topics.length,
       topics,
     });
@@ -134,15 +166,21 @@ const getTopicById = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid topic ID.",
+      });
+    }
+
     const topic = await Topic.findOne({
       _id: id,
       user: req.user._id,
       isArchived: false,
-    });
+    }).populate("subject", "name color");
 
     if (!topic) {
       return res.status(404).json({
-        message: "Topic not Found",
+        message: "Topic not found",
       });
     }
 
@@ -155,7 +193,7 @@ const getTopicById = async (req, res) => {
 
     if (error.name === "CastError") {
       return res.status(400).json({
-        message: "Invalid topic id",
+        message: "Invalid topic ID",
       });
     }
 
@@ -172,15 +210,43 @@ const updateTopic = async (req, res) => {
     const { id } = req.params;
     const { name, difficulty, notes } = req.body;
 
-    if (!name?.trim() && !difficulty?.trim() && !notes?.trim()) {
+    const trimmedName = name?.trim();
+    const trimmedDifficulty = difficulty?.trim();
+    const trimmedNotes = notes?.trim();
+
+    if (name === undefined && difficulty === undefined && notes === undefined) {
       return res.status(400).json({
         message: "At least one field required to update",
       });
     }
 
-    if (name !== undefined && !name.trim()) {
+    if (name !== undefined && !trimmedName) {
       return res.status(400).json({
         message: "Topic name can not be empty ",
+      });
+    }
+    if (trimmedName !== undefined) {
+      if (trimmedName.length < 2) {
+        return res.status(400).json({
+          message: "Topic name must be at least 2 characters long.",
+        });
+      }
+
+      if (trimmedName.length > 50) {
+        return res.status(400).json({
+          message: "Topic name cannot exceed 50 characters.",
+        });
+      }
+    }
+
+    const allowedDifficulty = ["Easy", "Medium", "Hard"];
+
+    if (
+      trimmedDifficulty !== undefined &&
+      !allowedDifficulty.includes(trimmedDifficulty)
+    ) {
+      return res.status(400).json({
+        message: "Invalid difficulty level.",
       });
     }
 
@@ -199,20 +265,20 @@ const updateTopic = async (req, res) => {
     const updateData = {};
 
     if (name !== undefined) {
-      updateData.name = name;
+      updateData.name = trimmedName;
     }
     if (difficulty !== undefined) {
-      updateData.difficulty = difficulty;
+      updateData.difficulty = trimmedDifficulty;
     }
     if (notes !== undefined) {
-      updateData.notes = notes;
+      updateData.notes = trimmedNotes;
     }
 
     Object.assign(topic, updateData);
     await topic.save();
 
     return res.status(200).json({
-      message: "Topic updated Successfully ",
+      message: "Topic updated successfully ",
       topic,
     });
   } catch (error) {
@@ -227,6 +293,12 @@ const updateTopic = async (req, res) => {
     if (error.name === "CastError") {
       return res.status(400).json({
         message: "Invalid topic id",
+      });
+    }
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: error.message,
       });
     }
 
@@ -246,6 +318,14 @@ const deleteTopic = async (req, res) => {
 
     const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      await session.abortTransaction();
+
+      return res.status(400).json({
+        message: "Invalid topic ID.",
+      });
+    }
+
     const topic = await Topic.findOne({
       _id: id,
       user: req.user._id,
@@ -253,6 +333,7 @@ const deleteTopic = async (req, res) => {
     }).session(session);
 
     if (!topic) {
+      await session.abortTransaction();
       return res.status(404).json({
         message: "Topic not found",
       });
@@ -282,7 +363,7 @@ const deleteTopic = async (req, res) => {
 
     if (error.name === "CastError") {
       return res.status(400).json({
-        message: "Invalid Topic Id",
+        message: "Invalid Topic ID",
       });
     }
     return res.status(500).json({

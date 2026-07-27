@@ -17,14 +17,20 @@ const protect = async (req, res, next) => {
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decode.id).select("-password");
 
-    req.user = user
-    next();
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+      });
+    }
 
+    req.user = user;
+    next();
+    
   } catch (error) {
     console.error(error);
     return res.status(401).json({
-        message:"invalid token"
-    })
+      message: "invalid token",
+    });
   }
 };
 

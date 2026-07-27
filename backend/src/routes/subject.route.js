@@ -1,8 +1,15 @@
+/** @format */
+
 const express = require("express");
 
-const {createSubject, getSubjects, getSubjectById, updateSubject, deleteSubject} = require("../controllers/subject.controller");
-const {protect} = require("../middlewares/auth.middleware");
-
+const {
+  createSubject,
+  getSubjects,
+  getSubjectById,
+  updateSubject,
+  deleteSubject,
+} = require("../controllers/subject.controller");
+const { protect } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 

@@ -21,7 +21,7 @@ const getDashboard = async (req, res) => {
       completedToday,
     ] = await Promise.all([
       Subject.countDocuments({ user: req.user._id }),
-      Topic.countDocuments({ user: req.user._id }),
+      Topic.countDocuments({ user: req.user._id, isArchived: false }),
 
       Revision.find({
         user: req.user._id,
