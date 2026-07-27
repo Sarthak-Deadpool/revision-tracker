@@ -56,6 +56,20 @@ const completeRevision = async (req, res) => {
       });
     }
 
+    const topic = await Topic.findOne({
+      _id: revision.topic,
+      user: req.user._id,
+      isArchived: false,
+    }).session(session);
+
+    if (!topic) {
+      await session.abortTransaction();
+
+      return res.status(400).json({
+        message: "Cannot complete a revision for an archived topic.",
+      });
+    }
+
     await completeRevisionService({
       revision,
       rating,
@@ -111,8 +125,18 @@ const getTodayRevision = async (req, res) => {
       },
     })
       .populate("subject", "name color")
-      .populate("topic", "name difficulty")
+      .populate({
+        path: "topic",
+        select: "name difficulty",
+        match: {
+          isArchived: false,
+        },
+      })
       .sort({ scheduledDate: 1 });
+
+    const activeRevisions = revisions.filter(
+      (revision) => revision.topic !== null,
+    );
 
     return res.status(200).json({
       message: "Today's revisions fetched successfully",

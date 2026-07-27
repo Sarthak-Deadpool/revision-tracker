@@ -40,7 +40,7 @@ const calculateNextRevision = ({
         nextInterval = Math.round(interval * (easeFactor + 0.15));
       }
 
-      nextEaseFactor = Math.min(easeFactor + 0.15);
+      nextEaseFactor = Math.min(3, easeFactor + 0.15);
       break;
 
     default:

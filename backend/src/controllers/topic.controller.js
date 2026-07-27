@@ -139,10 +139,19 @@ const createTopic = async (req, res) => {
 
 const getTopics = async (req, res) => {
   try {
-    const topics = await Topic.find({
+    const { archived } = req.query;
+
+    const filter = {
       user: req.user._id,
-      isArchived: false,
-    })
+    };
+
+    if (archived === "true") {
+      filter.isArchived = true;
+    } else if (archived !== "all") {
+      filter.isArchived = false;
+    }
+
+    const topics = await Topic.find(filter)
       .populate("subject", "name color")
       .sort({ createdAt: -1 });
 
@@ -376,10 +385,133 @@ const deleteTopic = async (req, res) => {
   }
 };
 
+const archivedTopic = async (req, res) => {
+  try {
+    const { topicId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(topicId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid topic id.",
+      });
+    }
+
+    const topic = await Topic.findOne({
+      _id: topicId,
+      user: req.user._id,
+    });
+
+    if (!topic) {
+      return res.status(404).json({
+        success: false,
+        message: "Topic not found.",
+      });
+    }
+
+    if (topic.isArchived) {
+      return res.status(400).json({
+        success: false,
+        message: "Topic is already archived.",
+      });
+    }
+
+    topic.isArchived = true;
+
+    await topic.save();
+    return res.status(200).json({
+      success: true,
+      message: "Topic archived successfully.",
+      topic,
+    });
+  } catch (error) {
+    console.error("Error in archiveTopic:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+const unarchiveTopic = async (req, res) => {
+  try {
+    const { topicId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(topicId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid topic id.",
+      });
+    }
+
+    const topic = await Topic.findOne({
+      _id: topicId,
+      user: req.user._id,
+    });
+
+    if (!topic) {
+      return res.status(404).json({
+        success: false,
+        message: "Topic not found.",
+      });
+    }
+
+    if (!topic.isArchived) {
+      return res.status(400).json({
+        success: false,
+        message: "Topic is already active.",
+      });
+    }
+
+    topic.isArchived = false;
+
+    await topic.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Topic unarchived successfully.",
+      topic,
+    });
+  } catch (error) {
+    console.error("Error in unarchiveTopic:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+const getArchivedTopics = async (req, res) => {
+  try {
+    const archivedTopics = await Topic.find({
+      user: req.user._id,
+      isArchived: true,
+    })
+      .populate("subject")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Archived topics fetched successfully.",
+      archivedTopics,
+    });
+  } catch (error) {
+    console.error("Error in getArchivedTopics:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
 module.exports = {
   createTopic,
   getTopics,
   getTopicById,
   updateTopic,
   deleteTopic,
+  archivedTopic,
+  unarchiveTopic,
+  getArchivedTopics,
 };

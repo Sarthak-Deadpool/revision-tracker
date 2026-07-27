@@ -3,6 +3,10 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} = require("../utils/cloudinary.util");
 
 // this function register user in database
 
@@ -165,15 +169,16 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { name, avatar } = req.body;
+    const { name } = req.body;
+    const avatarFile = req.file;
 
-    if (Object.keys(req.body).length === 0) {
+    if (Object.keys(req.body).length === 0 && !req.file) {
       return res.status(400).json({
         message: "At least one field is required to update the profile.",
       });
     }
 
-    const allowedFields = ["name", "avatar"];
+    const allowedFields = ["name"];
     const receivedFields = Object.keys(req.body);
 
     const isValidOperation = receivedFields.every((field) =>
@@ -208,18 +213,21 @@ const updateProfile = async (req, res) => {
       }
     }
 
-    if (avatar !== undefined) {
-      if (typeof avatar !== "string" || !avatar.trim()) {
-        return res.status(400).json({
-          message: "Avatar must be a non empty string",
-        });
-      }
-    }
     if (name !== undefined) {
       req.user.name = name.trim();
     }
-    if (avatar !== undefined) {
-      req.user.avatar = avatar.trim();
+    if (avatarFile) {
+      if (req.user.avatarPublicId) {
+        await deleteFromCloudinary(req.user.avatarPublicId);
+      }
+
+      const uploadedAvatar = await uploadToCloudinary(
+        avatarFile.buffer,
+        "revision-tracker/avatars",
+      );
+
+      req.user.avatar = uploadedAvatar.secure_url;
+      req.user.avatarPublicId = uploadedAvatar.public_id;
     }
 
     await req.user.save();

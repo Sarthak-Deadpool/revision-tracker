@@ -31,24 +31,76 @@ const getDashboard = async (req, res) => {
         },
       })
         .populate("subject", "name color")
-        .populate("topic", "name difficulty")
+        .populate({
+          path: "topic",
+          select: "name difficulty",
+          match: {
+            isArchived: false,
+          },
+        })
         .sort({ scheduledDate: 1 }),
 
-      Revision.countDocuments({
-        user: req.user._id,
-        completedAt: null,
-        scheduledDate: {
-          $lt: startOfToday,
+      Revision.aggregate([
+        {
+          $match: {
+            user: req.user._id,
+            completedAt: null,
+            scheduledDate: {
+              $lt: startOfToday,
+            },
+          },
         },
-      }),
+        {
+          $lookup: {
+            from: "topics",
+            localField: "topic",
+            foreignField: "_id",
+            as: "topic",
+          },
+        },
+        {
+          $unwind: "$topic",
+        },
+        {
+          $match: {
+            "topic.isArchived": false,
+          },
+        },
+        {
+          $count: "count",
+        },
+      ]),
 
-      Revision.countDocuments({
-        user: req.user._id,
-        completedAt: null,
-        scheduledDate: {
-          $gt: today,
+      Revision.aggregate([
+        {
+          $match: {
+            user: req.user._id,
+            completedAt: null,
+            scheduledDate: {
+              $gt: today,
+            },
+          },
         },
-      }),
+        {
+          $lookup: {
+            from: "topics",
+            localField: "topic",
+            foreignField: "_id",
+            as: "topic",
+          },
+        },
+        {
+          $unwind: "$topic",
+        },
+        {
+          $match: {
+            "topic.isArchived": false,
+          },
+        },
+        {
+          $count: "count",
+        },
+      ]),
 
       Revision.countDocuments({
         user: req.user._id,
@@ -59,19 +111,25 @@ const getDashboard = async (req, res) => {
       }),
     ]);
 
+    const activeTodayRevisions = todayRevisions.filter(
+      (revision) => revision.topic !== null,
+    );
+    const overdue = overdueCount[0]?.count || 0;
+    const upcoming = upcomingCount[0]?.count || 0;
+
     return res.status(200).json({
       message: "Dashboard fetched successfully",
       summary: {
         totalSubjects,
         totalTopics,
-        today: todayRevisions.length,
+        today: activeTodayRevisions.length,
         completedToday,
-        overdue: overdueCount,
-        upcoming: upcomingCount,
+        overdue: overdue,
+        upcoming: upcoming,
         streak: req.user.streak,
         longestStreak: req.user.longestStreak,
       },
-      todayRevisions,
+      todayRevisions: activeTodayRevisions,
     });
   } catch (error) {
     console.error(error);

@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    avatarPublicId: {
+      type: String,
+      default: null,
+    },
     streak: {
       type: Number,
       default: 0,
@@ -34,6 +38,10 @@ const userSchema = new mongoose.Schema(
     longestStreak: {
       type: Number,
       default: 0,
+    },
+    lastStreakDate: {
+      type: Date,
+      default: null,
     },
   },
   {

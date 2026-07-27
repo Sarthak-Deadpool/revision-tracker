@@ -3,6 +3,8 @@
 const Topic = require("../models/topic.model");
 const Revision = require("../models/revision.model");
 const { calculateNextRevision } = require("../utils/scheduler.util");
+const { updateUserStreak } = require("./streak.service");
+const { calculateMastery } = require("../utils/calculateMastery.util");
 
 const completeRevisionService = async ({ revision, rating, session }) => {
   revision.rating = rating;
@@ -27,12 +29,17 @@ const completeRevisionService = async ({ revision, rating, session }) => {
       rating,
     });
 
+  const nextMastery = calculateMastery({
+    currentMastery: topic.mastery,
+    rating,
+  });
+
   const nextRevisionNumber = revision.revisionNumber + 1;
 
   topic.currentEaseFactor = nextEaseFactor;
   topic.currentInterval = nextInterval;
   topic.currentRepetition = nextRepetition;
-
+  topic.mastery = nextMastery;
   topic.totalRevisions = nextRevisionNumber;
   topic.lastRevisedAt = revision.completedAt;
 
@@ -58,6 +65,11 @@ const completeRevisionService = async ({ revision, rating, session }) => {
     ],
     { session },
   );
+
+  await updateUserStreak({
+    userId: revision.user,
+    session,
+  });
 };
 
 module.exports = { completeRevisionService };
