@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage";
 import AuthLayout from "../layouts/AuthLayout";
 import LoginPage from "../pages/LoginPages";
 import RegisterPage from "../pages/RegisterPage";
+import VerifyEmailPage from "@/pages/VerifyEmailPage";
 
 
 function AppRoutes() {
@@ -17,6 +18,7 @@ function AppRoutes() {
       <Route element={<AuthLayout/>}>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/register" element={<RegisterPage/>}/>
+        <Route path="/verify-email" element={<VerifyEmailPage/>}/>
       </Route>
 
     </Routes>

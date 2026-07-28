@@ -9,3 +9,13 @@ export const register = async (data) => {
   const response = await api.post("/users/register", data);
   return response.data;
 };
+
+export const verifyEmail = async (data) => {
+  const response = await api.post("/users/verify-email", data);
+  return response.data;
+};
+
+export const resendVerificationOTP = async (data) => {
+  const response = await api.post("/users/resend-verification-otp", data);
+  return response.data;
+};

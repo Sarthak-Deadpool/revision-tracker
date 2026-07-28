@@ -14,6 +14,7 @@ import PasswordInput from "./PasswordInput";
 import GradientButton from "./GradientButton";
 import TextInput from "./TextInput";
 
+
 function RegisterForm() {
   const navigate = useNavigate();
 
@@ -37,7 +38,11 @@ function RegisterForm() {
 
       toast.success("Account created successfully!");
 
-      navigate("/login");
+      navigate("/verify-email",{
+        state:{
+          email: data.email,
+        }
+      });
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }

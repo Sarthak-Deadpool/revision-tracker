@@ -39,7 +39,7 @@ function LoginForm() {
         user: response.user,
       });
 
-      toast.success(`Welcome back, ${response.data.name}!`);
+      toast.success(`Welcome back, ${response.user.name}!`);
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
