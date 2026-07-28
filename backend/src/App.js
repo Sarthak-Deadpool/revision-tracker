@@ -1,5 +1,5 @@
 /** @format */
-
+const cors = require("cors");
 const express = require("express");
 const logger = require("./middlewares/logger.middleware");
 const userRoutes = require("./routes/user.route");
@@ -9,6 +9,13 @@ const revisionRoutes = require("./routes/revision.route");
 const dashboardRoutes = require("./routes/dashboard.route");
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 app.use(logger);
 app.use(express.json());

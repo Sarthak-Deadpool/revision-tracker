@@ -128,3 +128,14 @@
     @apply font-sans;
     }
 }
+
+@theme {
+  --color-brand: #4f46e5;
+  --color-brand-dark: #3730a3;
+  --color-surface: #ffffff;
+  --color-background: #f8fafc;
+
+  --shadow-auth: 0 30px 60px rgba(15, 23, 42, 0.12);
+
+  --radius-auth: 28px;
+}
