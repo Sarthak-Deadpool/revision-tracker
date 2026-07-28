@@ -10,7 +10,8 @@ import { login } from "@/api/authApi";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import GradientButton from "./GradientButton";
-import { AuthProvider, useAuth } from "@/context/AuthContext";
+import {useAuth } from "@/context/AuthContext";
+import {toast} from "sonner"
 
 function LoginForm() {
   const auth = useAuth();
@@ -32,16 +33,15 @@ function LoginForm() {
 
     try {
       const response = await login(user);
-      
+
       auth.login({
         token: response.token,
         user: response.user,
-      })
+      });
 
-      console.log("Login success: ", response);
-
+      toast.success(`Welcome back, ${response.data.name}!`);
     } catch (error) {
-      console.error(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 

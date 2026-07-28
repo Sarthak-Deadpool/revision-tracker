@@ -1,6 +1,13 @@
 /** @format */
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import registerSchema from "@/schemas/registerSchema";
+import { register as registerUser } from "@/api/authApi";
+import {toast} from "sonner"
+
 
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
@@ -8,6 +15,34 @@ import GradientButton from "./GradientButton";
 import TextInput from "./TextInput";
 
 function RegisterForm() {
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      await registerUser(data);
+
+      toast.success("Account created successfully!");
+
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
   return (
     <div className="flex h-full flex-col px-6 py-6 sm:px-8 lg:px-20 lg:py-12">
       {/* Header */}
@@ -35,38 +70,47 @@ function RegisterForm() {
             study habits.
           </p>
 
-          <form className="mt-6 space-y-3 sm:space-y-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-6 space-y-3 sm:space-y-4"
+          >
             {/* Full Name */}
             <TextInput
               id="name"
-              name="name"
               label="Full Name"
               type="text"
               placeholder="Enter your full name"
+              error={errors.name?.message}
+              {...register("name")}
             />
 
             <EmailInput
               id="email"
-              name="email"
               label="Email Address"
               placeholder="Enter your email"
+              error={errors.email?.message}
+              {...register("email")}
             />
 
             <PasswordInput
               id="password"
-              name="password"
               label="Password"
               placeholder="Create a password"
+              error={errors.password?.message}
+              {...register("password")}
             />
 
             <PasswordInput
               id="confirmPassword"
-              name="confirmPassword"
               label="Confirm Password"
               placeholder="Confirm your password"
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
             />
 
-            <GradientButton type="submit">Create Account</GradientButton>
+            <GradientButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating Account..." : "Create Account"}
+            </GradientButton>
           </form>
         </div>
       </div>

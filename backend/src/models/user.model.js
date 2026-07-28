@@ -23,6 +23,30 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minlength: 8,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    verificationOTP: {
+      type: String,
+      default: null,
+    },
+
+    verificationOTPExpires: {
+      type: Date,
+      default: null,
+    },
+
+    passwordResetOTP: {
+      type: String,
+      default: null,
+    },
+
+    passwordResetOTPExpires: {
+      type: Date,
+      default: null,
+    },
     avatar: {
       type: String,
       default: null,

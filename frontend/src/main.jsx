@@ -7,12 +7,14 @@ import "./index.css";
 import App from "./App.jsx";
 
 import { AuthProvider } from "./context/AuthContext";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <App />
+        <Toaster position="top-right" richColors closeButton duration={3000} />
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
