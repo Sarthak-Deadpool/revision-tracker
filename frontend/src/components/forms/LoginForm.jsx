@@ -7,9 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import loginSchema from "@/schemas/loginSchema";
 import { login } from "@/api/authApi";
 
-import EmailInput from "./EmailInput";
-import PasswordInput from "./PasswordInput";
-import GradientButton from "./GradientButton";
+import EmailInput from "../reusable-componets/EmailInput";
+import PasswordInput from "../reusable-componets/PasswordInput";
+import GradientButton from "../reusable-componets/GradientButton";
+
 import {useAuth } from "@/context/AuthContext";
 import {toast} from "sonner"
 

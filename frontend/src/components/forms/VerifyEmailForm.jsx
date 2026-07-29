@@ -1,14 +1,16 @@
 /** @format */
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import { verifyEmail } from "@/api/authApi";
+import { verifyEmail, resendVerificationOTP } from "@/api/authApi";
 import { verifyEmailSchema } from "@/schemas/verifyEmailSchema";
-import GradientButton from "./GradientButton";
+import GradientButton from "../reusable-componets/GradientButton";
+import OTPInput from "../reusable-componets/OTPInput";
+import ResendOTPButton from "../reusable-componets/ResendOTPButton";
 
 const VerifyEmailForm = () => {
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ const VerifyEmailForm = () => {
   if (!email) return null;
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -46,7 +48,7 @@ const VerifyEmailForm = () => {
       navigate("/login");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Email verification failed."
+        error.response?.data?.message || "Email verification failed.",
       );
     }
   };
@@ -76,8 +78,8 @@ const VerifyEmailForm = () => {
           </h1>
 
           <p className="mt-4 text-base text-slate-500 sm:text-lg">
-            We've sent a 6-digit verification code to your email address.
-            Enter the code below to activate your account.
+            We've sent a 6-digit verification code to your email address. Enter
+            the code below to activate your account.
           </p>
 
           {/* Email Box */}
@@ -101,20 +103,17 @@ const VerifyEmailForm = () => {
                 Verification Code
               </label>
 
-              <input
-                id="otp"
-                type="text"
-                maxLength={6}
-                placeholder="Enter 6-digit OTP"
-                {...register("otp")}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-xl tracking-[0.4em] outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+              <Controller
+                name="otp"
+                control={control}
+                render={({ field }) => (
+                  <OTPInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.otp?.message}
+                  />
+                )}
               />
-
-              {errors.otp && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.otp.message}
-                </p>
-              )}
             </div>
 
             <GradientButton type="submit" disabled={isSubmitting}>
@@ -122,12 +121,10 @@ const VerifyEmailForm = () => {
             </GradientButton>
 
             <div className="text-center">
-              <button
-                type="button"
-                className="text-sm font-medium text-orange-500 transition hover:text-orange-700"
-              >
-                Resend OTP
-              </button>
+              <ResendOTPButton
+                email={email}
+                resendFunction={resendVerificationOTP}
+              />
             </div>
           </form>
         </div>

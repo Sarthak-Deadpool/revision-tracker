@@ -1,7 +1,7 @@
 /** @format */
 
 import { Outlet } from "react-router-dom";
-import LeftPanel from "@/components/auth/LeftPannel";
+import LeftPanel from "@/components/reusable-componets/LeftPannel";
 
 function AuthLayout() {
   return (

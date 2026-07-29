@@ -9,10 +9,10 @@ import { register as registerUser } from "@/api/authApi";
 import {toast} from "sonner"
 
 
-import EmailInput from "./EmailInput";
-import PasswordInput from "./PasswordInput";
-import GradientButton from "./GradientButton";
-import TextInput from "./TextInput";
+import EmailInput from "../reusable-componets/EmailInput";
+import PasswordInput from "../reusable-componets/PasswordInput";
+import GradientButton from "../reusable-componets/GradientButton";
+import TextInput from "../reusable-componets/TextInput";
 
 
 function RegisterForm() {

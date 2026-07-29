@@ -19,3 +19,14 @@ export const resendVerificationOTP = async (data) => {
   const response = await api.post("/users/resend-verification-otp", data);
   return response.data;
 };
+
+export const forgotPassword = async (data) => {
+  const response = await api.post("/users/forgot-password", data);
+  return response.data;
+}
+
+export const resetPassword = async (data) => {
+  const response = await api.post("/users/reset-password", data);
+  return response.data;
+};
+

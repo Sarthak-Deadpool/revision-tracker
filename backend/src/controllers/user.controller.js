@@ -351,70 +351,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// verify reset otp
-const verifyResetOTP = async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-
-    const normalizedEmail = email?.trim().toLowerCase();
-
-    if (!normalizedEmail || !otp) {
-      return res.status(400).json({
-        message: "Email and OTP are required.",
-      });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(normalizedEmail)) {
-      return res.status(400).json({
-        message: "Please provide a valid email address.",
-      });
-    }
-
-    const user = await User.findOne({
-      email: normalizedEmail,
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found.",
-      });
-    }
-
-    if (!user.passwordResetOTP || !user.passwordResetOTPExpires) {
-      return res.status(400).json({
-        message: "No password reset OTP found. Please request a new OTP.",
-      });
-    }
-
-    if (user.passwordResetOTPExpires < new Date()) {
-      return res.status(400).json({
-        message: "Password reset OTP has expired. Please request a new OTP.",
-      });
-    }
-
-    const crypto = require("crypto");
-
-    const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
-
-    if (hashedOTP !== user.passwordResetOTP) {
-      return res.status(400).json({
-        message: "Invalid OTP.",
-      });
-    }
-
-    return res.status(200).json({
-      message: "OTP verified successfully.",
-    });
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
-  }
-};
 
 //reset password
 const resetPassword = async (req, res) => {
@@ -672,7 +608,6 @@ module.exports = {
   verifyEmail,
   resendVerificationOTP,
   forgotPassword,
-  verifyResetOTP,
   resetPassword,
   getProfile,
   updateProfile,

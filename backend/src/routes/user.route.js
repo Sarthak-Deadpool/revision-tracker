@@ -25,7 +25,6 @@ router.post("/verify-email", verifyEmail);
 router.post("/resend-verification-otp", resendVerificationOTP);
 
 router.post("/forgot-password", forgotPassword);
-router.post("/verify-reset-otp", verifyResetOTP);
 router.post("/reset-password", resetPassword);
 
 router.get("/profile", protect, getProfile);

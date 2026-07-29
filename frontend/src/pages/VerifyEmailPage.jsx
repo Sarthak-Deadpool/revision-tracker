@@ -1,5 +1,5 @@
 
-import VerifyEmailForm from "@/components/auth/VerifyEmailForm";
+import VerifyEmailForm from "@/components/forms/VerifyEmailForm";
 
 const VerifyEmailPage = () => {
   return (
