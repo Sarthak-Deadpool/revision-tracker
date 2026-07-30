@@ -1,6 +1,6 @@
 /** @format */
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -11,10 +11,11 @@ import EmailInput from "../reusable-componets/EmailInput";
 import PasswordInput from "../reusable-componets/PasswordInput";
 import GradientButton from "../reusable-componets/GradientButton";
 
-import {useAuth } from "@/context/AuthContext";
-import {toast} from "sonner"
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 function LoginForm() {
+  const navigate = useNavigate();
   const auth = useAuth();
 
   const {
@@ -41,6 +42,8 @@ function LoginForm() {
       });
 
       toast.success(`Welcome back, ${response.user.name}!`);
+
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
