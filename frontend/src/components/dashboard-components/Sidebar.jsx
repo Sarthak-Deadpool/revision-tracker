@@ -26,7 +26,7 @@ const menuItems = [
   },
   {
     name: "Topics",
-    path: "/topics",
+    path: "/dashboard/topics",
     icon: FileText,
   },
   {

@@ -17,6 +17,7 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import DashboardPage from "@/pages/DashboardPage";
 
 import SubjectPage from "@/pages/SubjectPage";
+import TopicPage from "@/pages/TopicPage";
 
 function AppRoutes() {
   return (
@@ -37,6 +38,8 @@ function AppRoutes() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="subjects" element={<SubjectPage />} />
+          <Route path="topics" element ={<TopicPage/>}/>
+          <Route path="subjects/:subjectId/topics" element={<TopicPage />} />
         </Route>
       </Route>
     </Routes>

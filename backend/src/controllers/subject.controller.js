@@ -72,9 +72,24 @@ const getSubjects = async (req, res) => {
       createdAt: -1,
     });
 
+    const subjectsWithCount = await Promise.all(
+      subjects.map(async (subject) => {
+        const topicCount = await Topic.countDocuments({
+          subject: subject._id,
+          user: req.user._id,
+          isArchived: false,
+        });
+
+        return {
+          ...subject.toObject(),
+          topicCount,
+        };
+      }),
+    );
+
     return res.status(200).json({
       message: "Subjects fetched successfully",
-      subjects,
+      subjects: subjectsWithCount,
     });
   } catch (error) {
     console.error(error);

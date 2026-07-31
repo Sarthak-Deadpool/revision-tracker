@@ -18,8 +18,12 @@ import { toast } from "sonner";
 
 import SubjectSkeleton from "@/components/subject/SubjectSkeleton";
 import EmptySubjects from "@/components/subject/EmptySubjects";
+import { useNavigate } from "react-router-dom";
 
 function SubjectPage() {
+  
+  const navigate = useNavigate();
+
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,7 +98,7 @@ function SubjectPage() {
   };
 
   const handleStudySubject = (subject) => {
-    console.log("Study:", subject);
+    navigate(`/dashboard/subjects/${subject._id}/topics`);
   };
 
   const handleDeleteClick = (subject) => {

@@ -20,8 +20,12 @@ function SubjectModal({
   const isEditMode = mode === "edit";
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+    <Dialog open={open} onOpenChange={onOpenChange}  disablePointerDismissal>
+      <DialogContent
+        className="sm:max-w-lg"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>
             {isEditMode ? "Edit Subject" : "Create Subject"}

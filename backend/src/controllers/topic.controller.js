@@ -139,12 +139,24 @@ const createTopic = async (req, res) => {
 
 const getTopics = async (req, res) => {
   try {
-    const { archived } = req.query;
+    const { archived, subject, search, difficulty } = req.query;
 
     const filter = {
       user: req.user._id,
     };
 
+    if (subject) {
+      filter.subject = subject;
+    }
+    if (search?.trim()) {
+      filter.name = {
+        $regex: search.trim(),
+        $options: "i",
+      };
+    }
+    if (difficulty) {
+      filter.difficulty = difficulty;
+    }
     if (archived === "true") {
       filter.isArchived = true;
     } else if (archived !== "all") {
@@ -338,7 +350,6 @@ const deleteTopic = async (req, res) => {
     const topic = await Topic.findOne({
       _id: id,
       user: req.user._id,
-      isArchived: false,
     }).session(session);
 
     if (!topic) {
