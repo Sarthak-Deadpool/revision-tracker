@@ -7,17 +7,17 @@ import Navbar from "@/components/dashboard-components/Navbar";
 
 function DashboardLayout() {
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      {/* Sidebar */}
+    <div className="bg-slate-100">
+      {/* Fixed Sidebar */}
       <Sidebar />
 
-      {/* Main Section */}
-      <div className="flex flex-1 flex-col">
-        {/* Top Navigation */}
+      {/* Main Content */}
+      <div className="ml-64">
+        {/* Fixed Navbar */}
         <Navbar />
 
-        {/* Page Content */}
-        <main className="flex-1 p-6">
+        {/* Scrollable Content */}
+        <main className="mt-16 min-h-[calc(100vh-4rem)] overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>

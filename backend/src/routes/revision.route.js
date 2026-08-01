@@ -13,8 +13,8 @@ const {
 const router = express.Router();
 
 router.get("/today", protect, getTodayRevision);
-router.patch("/:id/complete", protect, completeRevision);
-router.get("/:topicID/revision-history", protect, getRevisionHistory );
+router.patch("/:revisionId/complete", protect, completeRevision);
+router.get("/:topicId/revision-history", protect, getRevisionHistory );
 router.get("/:topicId/next-revision", protect, getNextRevision);
 
 

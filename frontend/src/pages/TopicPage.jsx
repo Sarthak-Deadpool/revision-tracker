@@ -26,6 +26,8 @@ import ArchiveTopicDialog from "@/components/topic/ArchiveTopicDialog";
 import TopicFilters from "@/components/topic/TopicFilters";
 import TopicTabs from "@/components/topic/TopicTabs";
 
+import StudyTopicDialog from "@/components/topic/StudyTopicDialog";
+
 function TopicPage() {
   const { subjectId } = useParams();
 
@@ -51,6 +53,8 @@ function TopicPage() {
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
   const [archiveLoading, setArchiveLoading] = useState(false);
 
+  const [studyTopicOpen, setStudyTopicOpen] = useState(false);
+
   /* ====================== Fetch ====================== */
 
   async function fetchTopics() {
@@ -63,8 +67,6 @@ function TopicPage() {
         difficulty,
         archived: status === "archived" ? "true" : "false",
       });
-
-      
 
       setTopics(response.topics);
     } catch (error) {
@@ -242,10 +244,8 @@ function TopicPage() {
   /* ====================== Study ====================== */
 
   const handleStudyTopic = (topic) => {
-    console.log(topic);
-
-    // Future:
-    // navigate(`/dashboard/revision/${topic._id}`)
+    setSelectedTopic(topic);
+    setStudyTopicOpen(true);
   };
 
   const handleStatusChange = (newStatus) => {
@@ -258,8 +258,8 @@ function TopicPage() {
     <div className="space-y-6">
       {/* ================= Header ================= */}
 
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-end">
+        {/* <div>
           <h1 className="text-2xl font-bold">
             {isGlobalView ? "All Topics" : "Topics"}
           </h1>
@@ -269,7 +269,7 @@ function TopicPage() {
               ? "Browse all your learning topics."
               : "Organize and revise your learning topics."}
           </p>
-        </div>
+        </div> */}
 
         <button
           onClick={openCreateModal}
@@ -375,6 +375,18 @@ function TopicPage() {
         loading={archiveLoading}
         mode="archive"
         onConfirm={handleArchiveTopic}
+      />
+
+      <StudyTopicDialog
+        open={studyTopicOpen}
+        onOpenChange={(open) => {
+          setStudyTopicOpen(open);
+
+          if (!open) {
+            setSelectedTopic(null);
+          }
+        }}
+        topic={selectedTopic}
       />
     </div>
   );

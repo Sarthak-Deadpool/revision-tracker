@@ -31,7 +31,7 @@ const menuItems = [
   },
   {
     name: "Revisions",
-    path: "/revisions",
+    path: "/dashboard/revisions",
     icon: RotateCw,
   },
   {
@@ -58,7 +58,7 @@ const menuItems = [
 
 function Sidebar() {
   return (
-    <aside className="flex w-64 flex-col border-r border-slate-200 bg-white">
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
       {/* Logo */}
       <div className="border-b border-slate-200 p-6">
         <h1 className="text-xl font-bold text-slate-900">Revision Tracker</h1>

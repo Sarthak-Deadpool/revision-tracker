@@ -133,12 +133,12 @@ function SubjectPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-end">
+        {/* <div>
           <h1 className="text-2xl font-bold">Subjects</h1>
 
           <p className="text-slate-500">Organize your revision subjects.</p>
-        </div>
+        </div> */}
 
         <button
           onClick={() => {

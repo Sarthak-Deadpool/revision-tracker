@@ -69,6 +69,8 @@ const createTopic = async (req, res) => {
           currentEaseFactor: 2.5,
           currentInterval: 0,
           currentRepetition: 0,
+
+          totalRevisions: 1,
         },
       ],
       { session },

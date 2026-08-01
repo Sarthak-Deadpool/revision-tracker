@@ -34,13 +34,13 @@ const completeRevisionService = async ({ revision, rating, session }) => {
     rating,
   });
 
-  const nextRevisionNumber = revision.revisionNumber + 1;
+  const nextRevisionNumber = topic.revisionNumber + 1;
 
   topic.currentEaseFactor = nextEaseFactor;
   topic.currentInterval = nextInterval;
   topic.currentRepetition = nextRepetition;
   topic.mastery = nextMastery;
-  topic.totalRevisions = nextRevisionNumber;
+  topic.totalRevisions +=1;
   topic.lastRevisedAt = revision.completedAt;
 
   await topic.save({ session });

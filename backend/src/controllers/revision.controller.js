@@ -14,10 +14,10 @@ const completeRevision = async (req, res) => {
     session = await mongoose.startSession();
     session.startTransaction();
 
-    const { id } = req.params;
+    const { revisionId } = req.params;
     const { rating } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(revisionId)) {
       await session.abortTransaction();
 
       return res.status(400).json({
@@ -44,7 +44,7 @@ const completeRevision = async (req, res) => {
     }
 
     const revision = await Revision.findOne({
-      _id: id,
+      _id: revisionId,
       user: req.user._id,
     }).session(session);
 
@@ -127,7 +127,7 @@ const getTodayRevision = async (req, res) => {
       .populate("subject", "name color")
       .populate({
         path: "topic",
-        select: "name difficulty",
+        select: "name difficulty notes",
         match: {
           isArchived: false,
         },
@@ -140,8 +140,8 @@ const getTodayRevision = async (req, res) => {
 
     return res.status(200).json({
       message: "Today's revisions fetched successfully",
-      count: revisions.length,
-      revisions,
+      count: activeRevisions.length,
+      revisions: activeRevisions,
     });
   } catch (error) {
     console.error(error);
