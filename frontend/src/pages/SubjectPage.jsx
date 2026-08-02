@@ -1,8 +1,10 @@
 /** @format */
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 import SubjectModal from "@/components/subject/SubjectModal";
+
+import { useDashboard } from "@/context/DashboardContext";
 
 import {
   getSubjects,
@@ -21,8 +23,8 @@ import EmptySubjects from "@/components/subject/EmptySubjects";
 import { useNavigate } from "react-router-dom";
 
 function SubjectPage() {
-  
   const navigate = useNavigate();
+  
 
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,9 +50,26 @@ function SubjectPage() {
     }
   }
 
+  const { setPrimaryAction } = useDashboard();
+
+  const openCreateModal = useCallback(() => {
+    setModalMode("create");
+    setEditingSubject(null);
+    setIsModalOpen(true);
+  },[]);
+
   useEffect(() => {
     fetchSubject();
   }, []);
+
+  useEffect(() => {
+    setPrimaryAction({
+      label: "Add Subject",
+      onClick: openCreateModal,
+    });
+
+    return () => setPrimaryAction(null);
+  }, [setPrimaryAction], openCreateModal);
 
   const subjectDefaultValues = useMemo(() => {
     if (!editingSubject) return undefined;
@@ -133,12 +152,12 @@ function SubjectPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
-        {/* <div>
+      {/* <div className="flex items-center justify-end">
+        <div>
           <h1 className="text-2xl font-bold">Subjects</h1>
 
           <p className="text-slate-500">Organize your revision subjects.</p>
-        </div> */}
+        </div>
 
         <button
           onClick={() => {
@@ -150,18 +169,12 @@ function SubjectPage() {
         >
           Add Subject
         </button>
-      </div>
+      </div> */}
 
       {loading ? (
         <SubjectSkeleton />
       ) : subjects.length === 0 ? (
-        <EmptySubjects
-          onCreateSubject={() => {
-            setModalMode("create");
-            setEditingSubject(null);
-            setIsModalOpen(true);
-          }}
-        />
+        <EmptySubjects onCreateSubject={openCreateModal} />
       ) : (
         <SubjectGrid
           subjects={subjects}

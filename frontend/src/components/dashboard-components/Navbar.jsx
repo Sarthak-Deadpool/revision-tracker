@@ -3,10 +3,13 @@
 import { Bell, LogOut, Plus, UserCircle } from "lucide-react";
 import { matchPath, useLocation } from "react-router-dom";
 
+import { useDashboard } from "@/context/DashboardContext";
 import { pageConfig } from "@/config/pageConfig";
 
 function Navbar() {
   const location = useLocation();
+
+  const { primaryAction } = useDashboard();
 
   const page = Object.entries(pageConfig)
     .sort(([pathA], [pathB]) => pathB.length - pathA.length)
@@ -30,10 +33,13 @@ function Navbar() {
       {/* Right */}
 
       <div className="flex items-center gap-3">
-        {page.action && (
-          <button className="flex items-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-600">
+        {primaryAction && (
+          <button
+            onClick={primaryAction.onClick}
+            className="flex items-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-600"
+          >
             <Plus className="h-4 w-4" />
-            {page.action.label}
+            {primaryAction.label}
           </button>
         )}
 

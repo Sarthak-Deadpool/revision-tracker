@@ -19,6 +19,9 @@ const getDashboard = async (req, res) => {
       overdueCount,
       upcomingCount,
       completedToday,
+      subjectProgress,
+      upcomingRevisions,
+      recentHistory,
     ] = await Promise.all([
       Subject.countDocuments({ user: req.user._id }),
       Topic.countDocuments({ user: req.user._id, isArchived: false }),
@@ -109,9 +112,98 @@ const getDashboard = async (req, res) => {
           $lte: today,
         },
       }),
+      Topic.aggregate([
+        {
+          $match: {
+            user: req.user._id,
+            isArchived: false,
+          },
+        },
+        {
+          $lookup: {
+            from: "subjects",
+            localField: "subject",
+            foreignField: "_id",
+            as: "subject",
+          },
+        },
+        {
+          $unwind: "$subject",
+        },
+        {
+          $group: {
+            _id: "$subject._id",
+            name: {
+              $first: "$subject.name",
+            },
+            color: {
+              $first: "$subject.color",
+            },
+            averageMastery: {
+              $avg: "$masteryLevel",
+            },
+            totalTopics: {
+              $sum: 1,
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            color: 1,
+            totalTopics: 1,
+            averageMastery: {
+              $round: ["$averageMastery", 0],
+            },
+          },
+        },
+        {
+          $sort: {
+            averageMastery: -1,
+          },
+        },
+      ]),
+
+      Revision.find({
+        user: req.user._id,
+        completedAt: null,
+        scheduledDate: {
+          $gt: today,
+        },
+      })
+        .populate("subject", "name color")
+        .populate({
+          path: "topic",
+          select: "name difficulty",
+          match: {
+            isArchived: false,
+          },
+        })
+        .sort({
+          scheduledDate: 1,
+        })
+        .limit(5),
+
+      Revision.find({
+        user: req.user._id,
+        completedAt: { $ne: null },
+      })
+        .populate("subject", "name color")
+        .populate({
+          path: "topic",
+          select: "name difficulty",
+        })
+        .sort({
+          completedAt: -1,
+        })
+        .limit(5),
     ]);
 
     const activeTodayRevisions = todayRevisions.filter(
+      (revision) => revision.topic !== null,
+    );
+    const activeUpcomingRevisions = upcomingRevisions.filter(
       (revision) => revision.topic !== null,
     );
     const overdue = overdueCount[0]?.count || 0;
@@ -119,17 +211,23 @@ const getDashboard = async (req, res) => {
 
     return res.status(200).json({
       message: "Dashboard fetched successfully",
-      summary: {
+      stats: {
         totalSubjects,
         totalTopics,
         today: activeTodayRevisions.length,
         completedToday,
-        overdue: overdue,
-        upcoming: upcoming,
+        overdue,
+        upcoming,
         streak: req.user.streak,
         longestStreak: req.user.longestStreak,
       },
-      todayRevisions: activeTodayRevisions,
+      todayRevisionCount: activeTodayRevisions.length,
+
+      todayRevisions: activeTodayRevisions.slice(0, 5),
+      subjectProgress,
+
+      upcomingRevisions: activeUpcomingRevisions,
+      recentHistory,
     });
   } catch (error) {
     console.error(error);

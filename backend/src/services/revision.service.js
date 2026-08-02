@@ -30,17 +30,17 @@ const completeRevisionService = async ({ revision, rating, session }) => {
     });
 
   const nextMastery = calculateMastery({
-    currentMastery: topic.mastery,
+    currentMastery: topic.masteryLevel,
     rating,
   });
 
-  const nextRevisionNumber = topic.revisionNumber + 1;
+  const nextRevisionNumber = revision.revisionNumber + 1;
 
   topic.currentEaseFactor = nextEaseFactor;
   topic.currentInterval = nextInterval;
   topic.currentRepetition = nextRepetition;
-  topic.mastery = nextMastery;
-  topic.totalRevisions +=1;
+  topic.masteryLevel = nextMastery;
+  topic.totalRevisions = nextRevisionNumber;
   topic.lastRevisedAt = revision.completedAt;
 
   await topic.save({ session });

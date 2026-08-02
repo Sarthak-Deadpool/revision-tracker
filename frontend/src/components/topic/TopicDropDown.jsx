@@ -11,7 +11,6 @@ import {
 
 function TopicDropdown({ topic, onEdit, onArchive, onUnarchive, onDelete }) {
   const { isArchived } = topic;
-  console.log("Dropdown topic:", topic.name, topic.isArchived);
 
   return (
     <DropdownMenu>

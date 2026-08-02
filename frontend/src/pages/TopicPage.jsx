@@ -1,10 +1,12 @@
 /** @format */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Archive } from "lucide-react";
+
+import { useDashboard } from "@/context/DashboardContext";
 
 import {
   getTopics,
@@ -32,6 +34,8 @@ function TopicPage() {
   const { subjectId } = useParams();
 
   const isGlobalView = !subjectId;
+
+  const { setPrimaryAction } = useDashboard();
 
   /* ====================== State ====================== */
 
@@ -119,11 +123,21 @@ function TopicPage() {
 
   /* ====================== Modal ====================== */
 
-  const openCreateModal = () => {
+  const openCreateModal = useCallback(() => {
     setModalMode("create");
     setEditingTopic(null);
     setIsModalOpen(true);
-  };
+  }, []);
+
+  useEffect(() => {
+    setPrimaryAction({
+      label: isGlobalView ? "Add Topic" : "Add Subject Topic",
+
+      onClick: openCreateModal,
+    });
+
+    return () => setPrimaryAction(null);
+  }, [isGlobalView, setPrimaryAction, openCreateModal]);
 
   const openEditModal = (topic) => {
     setModalMode("edit");
@@ -258,8 +272,8 @@ function TopicPage() {
     <div className="space-y-6">
       {/* ================= Header ================= */}
 
-      <div className="flex items-center justify-end">
-        {/* <div>
+      {/* <div className="flex items-center justify-end">
+        <div>
           <h1 className="text-2xl font-bold">
             {isGlobalView ? "All Topics" : "Topics"}
           </h1>
@@ -269,7 +283,7 @@ function TopicPage() {
               ? "Browse all your learning topics."
               : "Organize and revise your learning topics."}
           </p>
-        </div> */}
+        </div>
 
         <button
           onClick={openCreateModal}
@@ -277,10 +291,10 @@ function TopicPage() {
         >
           Add Topic
         </button>
-      </div>
+      </div> */}
 
-      <div className="flex items-center flex-1 gap-2">
-        <div className="flex-[80%]">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex-1 min-w-[320px]">
           <TopicFilters
             search={search}
             onSearchChange={setSearch}
@@ -288,9 +302,8 @@ function TopicPage() {
             onDifficultyChange={setDifficulty}
           />
         </div>
-        <div>
-          <TopicTabs value={status} onChange={handleStatusChange} />
-        </div>
+
+        <TopicTabs value={status} onChange={handleStatusChange} />
       </div>
 
       {/* ================= Content ================= */}

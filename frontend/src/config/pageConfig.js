@@ -9,28 +9,22 @@ export const pageConfig = {
   "/dashboard/subjects/:subjectId/topics": {
     title: "Subject Topics",
     subtitle: "Manage topics for this subject.",
-    action: {
-      id: "create-subject-topic",
-      label: "Add Subject Topic",
-    },
+    
   },
 
   "/dashboard/topics": {
     title: "Topics",
     subtitle: "Organize and revise your learning topics.",
-    action: {
-      id: "create-topic",
-      label: "Add Topic",
-    },
+    
   },
 
   "/dashboard/subjects": {
     title: "Subjects",
     subtitle: "Manage all your study subjects.",
-    action: {
-      id: "create-subject",
-      label: "Add Subject",
-    },
+    // action: {
+    //   id: "create-subject",
+    //   label: "Add Subject",
+    // },
   },
   "/dashboard/revisions": {
     title: "Today's Revisions",
