@@ -1,58 +1,49 @@
 /** @format */
 
-function TopicTabs({
-  value,
-  onChange,
-  activeCount,
-  archivedCount,
-}) {
+function TopicTabs({ value, onChange, activeCount, archivedCount }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white  shadow-sm">
-      <div className="flex w-fit rounded-xl bg-slate-100 p-1">
-        <button
-          type="button"
-          onClick={() => onChange("active")}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-200
-
-            ${
-              value === "active"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }
-          `}
+    <div className="grid w-full grid-cols-2 rounded-2xl bg-slate-100  border-2">
+      <button
+        type="button"
+        onClick={() => onChange("active")}
+        className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${
+          value === "active"
+            ? "bg-white shadow text-slate-900"
+            : "text-slate-500 hover:text-slate-700"
+        }`}
+      >
+        Active
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs ${
+            value === "active"
+              ? "bg-orange-100 text-orange-600"
+              : "bg-slate-200 text-slate-600"
+          }`}
         >
-          Active
+          {activeCount}
+        </span>
+      </button>
 
-          {typeof activeCount === "number" && (
-            <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold">
-              {activeCount}
-            </span>
-          )}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onChange("archived")}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-200
-
-            ${
-              value === "archived"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }
-          `}
+      <button
+        type="button"
+        onClick={() => onChange("archived")}
+        className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${
+          value === "archived"
+            ? "bg-white shadow text-slate-900"
+            : "text-slate-500 hover:text-slate-700"
+        }`}
+      >
+        Archived
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs ${
+            value === "archived"
+              ? "bg-orange-100 text-orange-600"
+              : "bg-slate-200 text-slate-600"
+          }`}
         >
-          Archived
-
-          {typeof archivedCount === "number" && (
-            <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold">
-              {archivedCount}
-            </span>
-          )}
-        </button>
-      </div>
+          {archivedCount}
+        </span>
+      </button>
     </div>
   );
 }

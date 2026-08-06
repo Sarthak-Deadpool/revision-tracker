@@ -2,7 +2,6 @@
 
 import SubjectCard from "./SubjectCard";
 
-
 function SubjectGrid({
   subjects = [],
   onEdit,
@@ -15,7 +14,7 @@ function SubjectGrid({
   }
 
   return (
-    <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid auto-rows-fr grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
       {subjects.map((subject) => (
         <SubjectCard
           key={subject._id}

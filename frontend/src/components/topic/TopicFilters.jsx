@@ -4,22 +4,10 @@ import FilterSearch from "../reusable-componets/FilterSearcht";
 import FilterSelect from "../reusable-componets/FilterSelect";
 
 const difficultyOptions = [
-  {
-    label: "All Difficulties",
-    value: "",
-  },
-  {
-    label: "Easy",
-    value: "Easy",
-  },
-  {
-    label: "Medium",
-    value: "Medium",
-  },
-  {
-    label: "Hard",
-    value: "Hard",
-  },
+  { label: "All Difficulties", value: "" },
+  { label: "Easy", value: "Easy" },
+  { label: "Medium", value: "Medium" },
+  { label: "Hard", value: "Hard" },
 ];
 
 function TopicFilters({
@@ -29,20 +17,25 @@ function TopicFilters({
   onDifficultyChange,
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-1 shadow-sm">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+    <div className="flex flex-col gap-3 sm:flex-row">
+      {/* Search */}
+
+      <div className="flex-1">
         <FilterSearch
           value={search}
           onChange={onSearchChange}
           placeholder="Search topics..."
         />
+      </div>
 
+      {/* Difficulty */}
+
+      <div className="sm:w-52 lg:w-60">
         <FilterSelect
           value={difficulty}
           onChange={onDifficultyChange}
           placeholder="Difficulty"
           options={difficultyOptions}
-          className="w-full lg:w-[220px]"
         />
       </div>
     </div>

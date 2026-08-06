@@ -9,12 +9,12 @@ function FilterSearch({
   className = "",
 }) {
   return (
-    <div className={`relative flex-1 ${className}`}>
+    <div className={`relative w-full ${className}`}>
       <Search
         className="
           pointer-events-none
           absolute
-          left-4
+          left-5
           top-1/2
           h-5
           w-5
@@ -29,28 +29,36 @@ function FilterSearch({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="
-          h-11
+          h-12
           w-full
-          rounded-xl
+
+          rounded-2xl
+
           border
           border-slate-200
-          bg-slate-50
-          py-2.5
-          pl-11
-          pr-4
-          text-sm
+
+          bg-white
+
+          pl-14
+          pr-5
+
+          text-[15px]
+          font-medium
           text-slate-700
+
+          placeholder:font-normal
           placeholder:text-slate-400
+
           outline-none
+
           transition-all
           duration-200
 
           hover:border-slate-300
 
-          focus:border-indigo-500
-          focus:bg-white
+          focus:border-orange-400
           focus:ring-4
-          focus:ring-indigo-100
+          focus:ring-orange-100
         "
       />
     </div>

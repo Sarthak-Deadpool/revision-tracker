@@ -25,8 +25,7 @@ import TopicSkeleton from "@/components/topic/TopicSkeleton";
 import EmptyTopic from "@/components/topic/EmptyTopic";
 import DeleteTopicDialog from "@/components/topic/DeleteTopicDialog";
 import ArchiveTopicDialog from "@/components/topic/ArchiveTopicDialog";
-import TopicFilters from "@/components/topic/TopicFilters";
-import TopicTabs from "@/components/topic/TopicTabs";
+import TopicToolbar from "@/components/topic/TopicToolbar";
 
 import StudyTopicDialog from "@/components/topic/StudyTopicDialog";
 
@@ -269,42 +268,19 @@ function TopicPage() {
     setSearch("");
   };
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 lg:space-y-6">
       {/* ================= Header ================= */}
 
-      {/* <div className="flex items-center justify-end">
-        <div>
-          <h1 className="text-2xl font-bold">
-            {isGlobalView ? "All Topics" : "Topics"}
-          </h1>
-
-          <p className="text-slate-500">
-            {isGlobalView
-              ? "Browse all your learning topics."
-              : "Organize and revise your learning topics."}
-          </p>
-        </div>
-
-        <button
-          onClick={openCreateModal}
-          className="rounded-xl bg-orange-500 px-5 py-2 text-white transition hover:bg-orange-700"
-        >
-          Add Topic
-        </button>
-      </div> */}
-
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex-1 min-w-[320px]">
-          <TopicFilters
-            search={search}
-            onSearchChange={setSearch}
-            difficulty={difficulty}
-            onDifficultyChange={setDifficulty}
-          />
-        </div>
-
-        <TopicTabs value={status} onChange={handleStatusChange} />
-      </div>
+      <TopicToolbar
+        search={search}
+        onSearchChange={setSearch}
+        difficulty={difficulty}
+        onDifficultyChange={setDifficulty}
+        tab={status}
+        onTabChange={handleStatusChange}
+        activeCount={topics.filter((topic) => !topic.isArchived).length}
+        archivedCount={topics.filter((topic) => topic.isArchived).length}
+      />
 
       {/* ================= Content ================= */}
 
@@ -312,16 +288,21 @@ function TopicPage() {
         <TopicSkeleton />
       ) : topics.length === 0 ? (
         status === "archived" ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center">
-            <div className="mb-4 rounded-full bg-orange-100 p-4">
-              <Archive className="h-8 w-8 text-orange-500 " />
+          <div
+            className="
+              flex min-h-[60vh] flex-col items-center
+              justify-center rounded-2xl border border-dashed
+            border-slate-300 bg-white px-6 py-14 sm:py-20 text-center"
+          >
+            <div className="mb-4 rounded-full bg-orange-100 p-3 sm:p-4">
+              <Archive className="h-7 w-7 sm:h-8 sm:w-8 text-orange-500 " />
             </div>
 
-            <h3 className="text-lg font-semibold text-slate-900">
+            <h3 className="text-base sm:text-lg font-semibold text-slate-900">
               No archived topics
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
               Archived topics will appear here once you archive them.
             </p>
           </div>

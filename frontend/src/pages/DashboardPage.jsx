@@ -54,13 +54,13 @@ function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 lg:space-y-8">
       <DashboardWelcome stats={dashboard.stats} />
 
       <DashboardStats stats={dashboard.stats} />
 
-      {/* Left */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Cards */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <TodayRevisions
           revisions={dashboard.todayRevisions}
           count={dashboard.todayRevisionCount}
@@ -70,6 +70,7 @@ function DashboardPage() {
       </div>
 
       <UpcomingRevisions revisions={dashboard.upcomingRevisions} />
+
       <RecentHistory revisions={dashboard.recentHistory} />
     </div>
   );

@@ -39,7 +39,7 @@ function SubjectForm({
   }, [defaultValues, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-6">
       {/* Subject Name */}
 
       <div className="space-y-2">
@@ -51,10 +51,6 @@ function SubjectForm({
           error={errors.name?.message}
           {...register("name")}
         />
-
-        <p className="text-sm text-slate-500">
-          Give your subject a meaningful name.
-        </p>
       </div>
 
       {/* Description */}
@@ -72,31 +68,38 @@ function SubjectForm({
 
         <textarea
           id="description"
-          rows={4}
+          rows={3}
           placeholder="Write a short description about this subject..."
           className={`
-               w-full resize-none rounded-2xl
-               border border-slate-200
-             bg-slate-50
-               px-4 py-3
-               text-sm
-                transition-all
-                duration-200
-                  outline-none
+w-full
+min-h-22.5
+resize-none
 
-                  focus:bg-white
-                 focus:border-indigo-500
-                      focus:ring-4
-                     focus:ring-indigo-100
+rounded-xl
+border
+border-slate-200
 
-    ${errors.description ? "border-red-500 ring-4 ring-red-100" : ""}
-  `}
+bg-slate-50
+
+px-4
+py-3
+
+text-sm
+
+transition-all
+duration-200
+
+outline-none
+
+focus:border-orange-500
+focus:bg-white
+focus:ring-4
+focus:ring-orange-100
+
+${errors.description ? "border-red-500 ring-4 ring-red-100" : ""}
+`}
           {...register("description")}
         />
-
-        <p className="text-sm text-slate-500">
-          This helps you identify the subject later.
-        </p>
 
         {errors.description && (
           <p className="text-sm text-red-500">{errors.description.message}</p>
@@ -119,8 +122,12 @@ function SubjectForm({
 
       {/* Footer */}
 
-      <div className="flex justify-end gap-3 border-t pt-6">
-        <GradientButton type="submit" disabled={isSubmitting}>
+      <div className="border-t border-slate-200 pt-5">
+        <GradientButton
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full"
+        >
           {submitButtonText === "Create Subject" ? (
             <Plus className="h-4 w-4" />
           ) : (

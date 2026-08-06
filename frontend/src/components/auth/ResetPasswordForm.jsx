@@ -60,7 +60,26 @@ const ResetPasswordForm = () => {
     }
   };
   return (
-    <div className="flex min-h-screen flex-col px-6 py-4 sm:px-8 lg:px-20 lg:py-4">
+    <div
+      className="
+    flex
+    min-h-full
+    flex-col
+
+    px-5
+    py-6
+
+    sm:px-8
+
+    md:px-12
+    md:py-8
+
+    lg:px-16
+    lg:py-6
+
+    xl:px-20
+  "
+    >
       {/* Header */}
       <div className="flex items-center justify-end">
         <button
@@ -73,7 +92,17 @@ const ResetPasswordForm = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 items-center justify-center py-4">
+      <div
+        className="
+    flex
+    flex-1
+    items-center
+    justify-center
+
+    py-4
+    md:py-6
+  "
+      >
         <div className="w-full max-w-md sm:max-w-lg">
           {/* Badge */}
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
@@ -81,23 +110,23 @@ const ResetPasswordForm = () => {
           </span>
 
           {/* Heading */}
-          <h1 className="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-xl lg:text-xl">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-4xl">
             Create a New Password
           </h1>
 
           {/* Description */}
-          <p className="mt-2 text-base leading-7 text-slate-500 sm:text-lg">
+          <p className="mt-2 text-sm leading-6 sm:text-base lg:text-lg text-slate-500">
             Enter the verification code sent to your email and choose a new
             password for your account.
           </p>
 
-
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-6">
+            
             {/* OTP */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Verification Code
+              <label className="mb-3 block text-sm font-medium text-slate-700">
+                Enter the 6-digit verification code sent to your email.
               </label>
 
               <Controller
@@ -135,13 +164,12 @@ const ResetPasswordForm = () => {
             </GradientButton>
 
             {/* Resend OTP */}
-            <div className="text-center">
+            <div className="text-center pt-1">
               <ResendOTPButton email={email} resendFunction={forgotPassword} />
             </div>
           </form>
         </div>
       </div>
-
     </div>
   );
 };

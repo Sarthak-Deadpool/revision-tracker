@@ -24,7 +24,7 @@ function TextInput({
           ${
             error
               ? "border-red-500 ring-4 ring-red-100"
-              : "border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100"
+              : "border-slate-200 focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-100"
           }
           ${className}
         `}

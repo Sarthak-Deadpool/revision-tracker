@@ -19,21 +19,32 @@ function FilterSelect({
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger
         className={`
-          h-11
-          min-w-[180px]
-          rounded-xl
+          !h-12
+          w-full
+
+          !rounded-2xl
+
+          border
           border-slate-200
-          bg-slate-50
-          text-sm
+
+          bg-white
+
+          px-4
+
+          text-[15px]
+          font-medium
+          text-slate-700
+
           shadow-none
+
           transition-all
           duration-200
 
           hover:border-slate-300
 
+          focus:border-orange-400
           focus:ring-4
-          focus:ring-indigo-100
-          focus:border-indigo-500
+          focus:ring-orange-100
 
           ${className}
         `}
@@ -41,11 +52,24 @@ function FilterSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
-      <SelectContent className="rounded-xl">
+      <SelectContent
+        className="
+          rounded-2xl
+          border-slate-200
+          p-2
+          shadow-xl
+        "
+      >
         {options.map((option) => (
           <SelectItem
             key={option.value}
             value={option.value}
+            className="
+              rounded-xl
+              text-[15px]
+              font-medium
+              cursor-pointer
+            "
           >
             {option.label}
           </SelectItem>

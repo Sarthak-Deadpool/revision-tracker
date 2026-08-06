@@ -69,7 +69,7 @@ const OTPInput = ({ value, onChange, length = 6, error }) => {
 
   return (
     <div>
-      <div className="flex justify-between gap-3">
+      <div className="flex justify-center gap-1.5 sm:gap-2 md:gap-3">
         {Array.from({ length }).map((_, index) => (
           <input
             key={index}
@@ -81,16 +81,34 @@ const OTPInput = ({ value, onChange, length = 6, error }) => {
             onChange={(e) => handleChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             onPaste={handlePaste}
-            className="h-14 w-14 rounded-xl border border-slate-300 text-center text-2xl font-semibold outline-none transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+            className="
+h-11 w-11
+sm:h-12 sm:w-12
+md:h-14 md:w-14
+
+rounded-xl
+border
+border-slate-300
+text-center
+
+text-lg
+sm:text-xl
+md:text-2xl
+
+font-semibold
+outline-none
+transition-all
+duration-200
+
+focus:border-orange-500
+focus:ring-2
+focus:ring-orange-200
+"
           />
         ))}
       </div>
 
-      {error && (
-        <p className="mt-2 text-sm text-red-500">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
     </div>
   );
 };

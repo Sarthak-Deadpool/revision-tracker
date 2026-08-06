@@ -56,7 +56,25 @@ const VerifyEmailForm = () => {
   };
 
   return (
-    <div className="flex h-full flex-col px-6 py-6 sm:px-8 lg:px-20 lg:py-12">
+    <div
+      className="
+    flex
+    min-h-full
+    flex-col
+    px-5
+    py-6
+
+    sm:px-8
+
+    md:px-12
+    md:py-6
+
+    lg:px-16
+    lg:py-12
+
+    xl:px-20
+  "
+    >
       {/* Header */}
       <div className="flex justify-end">
         <button
@@ -72,23 +90,38 @@ const VerifyEmailForm = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 items-center">
-        <div className="w-full max-w-lg">
+      <div
+        className="
+    flex
+    flex-1
+    items-center
+    justify-center
+  "
+      >
+        <div className="w-full max-w-md md:max-w-lg">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
             Verify Account
           </span>
 
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          <h1
+            className="mt-4 text-3xl
+              sm:text-4xl
+              lg:text-5xl font-bold tracking-tight text-slate-900 "
+          >
             Verify Your Email
           </h1>
 
-          <p className="mt-4 text-base text-slate-500 sm:text-lg">
+          <p
+            className="mt-2 text-sm
+              sm:text-base
+              lg:text-lg text-slate-500 "
+          >
             We've sent a 6-digit verification code to your email address. Enter
             the code below to activate your account.
           </p>
 
           {/* Email Box */}
-          <div className="mt-8 rounded-xl border border-orange-200 bg-orange-50 p-4">
+          <div className="mt-2 rounded-xl border border-orange-200 bg-orange-50 p-4 sm:p-5">
             <p className="text-xs font-semibold uppercase tracking-wider text-orange-600">
               Email Address
             </p>
@@ -97,13 +130,20 @@ const VerifyEmailForm = () => {
               {email}
             </p>
           </div>
+          <p className="mt-2 text-sm text-slate-500">
+            Didn't receive the code? Check your spam folder or request a new OTP
+            below.
+          </p>
 
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-6 md:mt-8 space-y-6"
+          >
             <div>
               <label
                 htmlFor="otp"
-                className="mb-2 block text-sm font-medium text-slate-700"
+                className="mb-3 block text-sm font-medium text-slate-700"
               >
                 Verification Code
               </label>
@@ -125,7 +165,7 @@ const VerifyEmailForm = () => {
               {isSubmitting ? "Verifying..." : "Verify Email"}
             </GradientButton>
 
-            <div className="text-center">
+            <div className="text-center pt-1">
               <ResendOTPButton
                 email={email}
                 resendFunction={resendVerificationOTP}
@@ -136,7 +176,10 @@ const VerifyEmailForm = () => {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col gap-2 border-t border-slate-200 pt-6 text-center text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
+      <div
+        className="flex flex-col gap-2 border-t border-slate-200 mt-6
+          pt-3 text-center text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left"
+      >
         <span>© 2026 Revision Tracker</span>
         <span>Secure Email Verification</span>
       </div>

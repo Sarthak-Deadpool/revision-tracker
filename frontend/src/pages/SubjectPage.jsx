@@ -45,7 +45,7 @@ function SubjectPage() {
 
       setSubjects(response.subjects);
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response?.data?.message || "Failed to load subjects.");
     } finally {
       setLoading(false);
     }
@@ -164,7 +164,7 @@ function SubjectPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 lg:space-y-6">
       {loading ? (
         <SubjectSkeleton />
       ) : subjects.length === 0 ? (

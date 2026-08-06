@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Mail } from "lucide-react";
 
 import { forgotPasswordSchema } from "@/schemas/forgotPasswordSchema";
 import { forgotPassword } from "@/api/authApi";
@@ -44,7 +45,26 @@ const ForgotPasswordForm = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col px-6 py-6 sm:px-8 lg:px-20 lg:py-12">
+    <div
+      className="
+    flex
+    min-h-full
+    flex-col
+
+    px-5
+    py-6
+
+    sm:px-8
+
+    md:px-12
+    md:py-10
+
+    lg:px-16
+    lg:py-12
+
+    xl:px-20
+  "
+    >
       {/* Header */}
       <div className="flex items-center justify-end">
         <button
@@ -57,7 +77,17 @@ const ForgotPasswordForm = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 items-center justify-center py-10">
+      <div
+        className="
+    flex
+    flex-1
+    items-center
+    justify-center
+
+    py-6
+    md:py-10
+  "
+      >
         <div className="w-full max-w-md sm:max-w-lg">
           {/* Badge */}
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
@@ -70,16 +100,20 @@ const ForgotPasswordForm = () => {
           </h1>
 
           {/* Description */}
-          <p className="mt-4 text-base leading-7 text-slate-500 sm:text-lg">
-            Enter your registered email address and we'll send you a
-            verification code to securely reset your password.
-          </p>
+
+          <div className="mt-8 rounded-xl border border-blue-200 bg-blue-50 p-4 sm:p-5">
+            <p className="mt-1 text-sm leading-6 sm:text-base lg:text-lg text-slate-500 ">
+              Enter your registered email address and we'll send you a
+              verification code to securely reset your password.
+            </p>
+          </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
             <TextInput
               label="Email Address"
               type="email"
+              icon={Mail}
               placeholder="Enter your email"
               {...register("email")}
               error={errors.email?.message}
@@ -101,4 +135,4 @@ const ForgotPasswordForm = () => {
   );
 };
 
-export default ForgotPasswordForm
+export default ForgotPasswordForm;

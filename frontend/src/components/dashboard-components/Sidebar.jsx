@@ -9,9 +9,12 @@ import {
   BarChart3,
   User,
   Settings,
+  X,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
+
+import { useNavigation } from "@/context/NavigationContext";
 
 const menuItems = [
   {
@@ -57,42 +60,84 @@ const menuItems = [
 ];
 
 function Sidebar() {
+  const { sidebarOpen, setSidebarOpen } = useNavigation();
+
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
-      {/* Logo */}
-      <div className="border-b border-slate-200 p-6">
-        <h1 className="text-xl font-bold text-slate-900">Revision Tracker</h1>
+    <>
+      {/* Mobile Backdrop */}
 
-        <p className="mt-1 text-sm text-slate-500">Study Smarter</p>
-      </div>
+      <div
+        onClick={() => setSidebarOpen(false)}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${
+          sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      />
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
+      {/* Sidebar */}
 
-            return (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
-                      isActive
-                        ? "bg-orange-400 text-white"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                    }`
-                  }
-                >
-                  <Icon className="h-5 w-5" />
-                  {item.name}
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </aside>
+      <aside
+        className={`fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0`}
+      >
+        {/* Logo */}
+
+        <div className="flex items-center justify-between border-b border-slate-200 p-6">
+          <div>
+            <h1 className="text-xl font-bold text-slate-900">
+              Revision Tracker
+            </h1>
+
+            <p className="mt-1 text-sm text-slate-500">Study Smarter</p>
+          </div>
+
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="rounded-lg p-2 transition hover:bg-slate-100 lg:hidden"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Navigation */}
+
+        <nav className="flex-1 overflow-y-auto p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <li key={item.path}>
+                  <NavLink
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                        isActive
+                          ? "bg-orange-500 text-white shadow-sm"
+                          : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                      }`
+                    }
+                  >
+                    <Icon className="h-5 w-5 shrink-0" />
+
+                    <span>{item.name}</span>
+                  </NavLink>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Footer */}
+
+        <div className="border-t border-slate-200 p-4">
+          <p className="text-center text-xs text-slate-500">
+            Revision Tracker v1.0
+          </p>
+        </div>
+      </aside>
+    </>
   );
 }
 

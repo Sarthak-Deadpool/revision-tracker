@@ -1,32 +1,30 @@
 /** @format */
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
+import { Bell, Menu, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
 import LogoutDialog from "../auth/LogoutDialog";
-
-import { Bell, LogOut, Plus, UserCircle } from "lucide-react";
-import { matchPath, useLocation } from "react-router-dom";
+import ProfileDropdown from "./ProfileDropdown";
 
 import { useDashboard } from "@/context/DashboardContext";
-import { pageConfig } from "@/config/pageConfig";
+import { useNavigation } from "@/context/NavigationContext";
 import { useAuth } from "@/context/AuthContext";
+import { pageConfig } from "@/config/pageConfig";
 
 function Navbar() {
   const location = useLocation();
-
   const navigate = useNavigate();
-  const { logout } = useAuth();
+
+  const { logout, user } = useAuth();
+  const { primaryAction } = useDashboard();
+  const { setSidebarOpen } = useNavigation();
+
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
-  const { primaryAction } = useDashboard();
-
-  const { user } = useAuth();
-
   const page = Object.entries(pageConfig)
-    .sort(([pathA], [pathB]) => pathB.length - pathA.length)
+    .sort(([a], [b]) => b.length - a.length)
     .find(([path]) =>
       matchPath({ path, end: false }, location.pathname),
     )?.[1] ?? {
@@ -37,9 +35,9 @@ function Navbar() {
   const handleLogout = () => {
     logout();
 
-    setLogoutDialogOpen(false);
-
     toast.success("Logged out successfully.");
+
+    setLogoutDialogOpen(false);
 
     navigate("/login", {
       replace: true,
@@ -48,67 +46,76 @@ function Navbar() {
 
   return (
     <>
-      <header className="fixed left-64 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 px-6 backdrop-blur-md">
-        {/* Left */}
+      <header className="fixed left-0 right-0 top-0 z-30 h-16 border-b border-slate-200 bg-white/90 shadow-sm backdrop-blur-md lg:left-64">
+        <div className="flex h-full items-center justify-between px-4 sm:px-6">
+          {/* Left */}
 
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">{page.title}</h1>
-
-          <p className="text-sm text-slate-500">{page.subtitle}</p>
-        </div>
-
-        {/* Right */}
-
-        <div className="flex items-center gap-3">
-          {primaryAction && (
+          <div className="flex items-center gap-3">
             <button
-              onClick={primaryAction.onClick}
-              className="flex items-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-600"
+              onClick={() => setSidebarOpen(true)}
+              className="rounded-xl p-2 transition hover:bg-slate-100 lg:hidden"
             >
-              <Plus className="h-4 w-4" />
-              {primaryAction.label}
+              <Menu className="h-6 w-6 text-slate-700" />
             </button>
-          )}
 
-          <button
-            onClick={() => navigate("/dashboard/notifications")}
-            className="rounded-full p-2 text-slate-600 transition hover:bg-slate-100"
-          >
-            <Bell className="h-5 w-5" />
-          </button>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 sm:text-2xl">
+                {page.title}
+              </h1>
 
-          <Link
-            to="/dashboard/profile"
-            className="flex items-center gap-3 rounded-xl p-2 transition hover:bg-slate-100"
-          >
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="h-10 w-10 rounded-full border border-slate-200 object-cover"
-              />
-            ) : (
-              <UserCircle className="h-10 w-10 text-slate-500" />
+              <p className="hidden text-sm text-slate-500 lg:block">
+                {page.subtitle}
+              </p>
+            </div>
+          </div>
+
+          {/* Right */}
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Desktop Add */}
+
+            {primaryAction && (
+              <>
+                <button
+                  onClick={primaryAction.onClick}
+                  className="hidden items-center gap-2 rounded-xl  px-4 py-2 text-sm font-medium bg-orange-50 transition  sm:flex"
+                >
+                  <Plus className="h-4 w-4" />
+
+                  {primaryAction.label}
+                </button>
+
+                {/* Mobile */}
+
+                <button
+                  onClick={primaryAction.onClick}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 transition  sm:hidden"
+                >
+                  <Plus className="h-5 w-5" />
+                </button>
+              </>
             )}
 
-            <div className="hidden sm:block">
-              <p className="text-sm font-semibold text-slate-900">
-                {user?.name}
-              </p>
+            {/* Notification */}
 
-              <p className="text-xs text-slate-500">View Profile</p>
-            </div>
-          </Link>
+            <button
+              onClick={() => navigate("/dashboard/notifications")}
+              className="rounded-xl p-2.5 transition hover:bg-slate-100"
+            >
+              <Bell className="h-5 w-5 text-slate-600" />
+            </button>
 
-          <button
-            onClick={() => setLogoutDialogOpen(true)}
-            className="flex items-center gap-2 rounded-lg border px-4 py-2 text-sm hover:bg-slate-100"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </button>
+            {/* Profile */}
+
+            <ProfileDropdown
+              user={user}
+              navigate={navigate}
+              onLogout={() => setLogoutDialogOpen(true)}
+            />
+          </div>
         </div>
       </header>
+
       <LogoutDialog
         open={logoutDialogOpen}
         onOpenChange={setLogoutDialogOpen}

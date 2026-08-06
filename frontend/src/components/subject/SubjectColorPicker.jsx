@@ -13,33 +13,26 @@ const SUBJECT_COLORS = [
 ];
 
 function SubjectColorPicker({ value, onChange, error }) {
-  const isCustomColor = !SUBJECT_COLORS.some(
-    (color) => color.value === value
-  );
+  const isCustomColor = !SUBJECT_COLORS.some((color) => color.value === value);
 
-  const selectedColor =
-    SUBJECT_COLORS.find((color) => color.value === value) ?? {
-      name: "Custom",
-      value,
-    };
+  const selectedColor = SUBJECT_COLORS.find(
+    (color) => color.value === value,
+  ) ?? {
+    name: "Custom",
+    value,
+  };
 
   return (
     <div className="space-y-4">
       {/* Heading */}
 
       <div>
-        <h3 className="text-sm font-semibold text-slate-900">
-          Subject Color
-        </h3>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Choose a color to easily identify this subject.
-        </p>
+        <h3 className="text-sm font-semibold text-slate-900">Subject Color</h3>
       </div>
 
       {/* Color Palette */}
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2.5">
         {SUBJECT_COLORS.map((color) => {
           const isSelected = value === color.value;
 
@@ -50,18 +43,18 @@ function SubjectColorPicker({ value, onChange, error }) {
               aria-label={color.name}
               title={color.name}
               onClick={() => onChange(color.value)}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border-4 border-white shadow-md transition-all duration-200 hover:scale-110 ${
-                isSelected
-                  ? "scale-110 ring-2 ring-indigo-500 ring-offset-2"
-                  : ""
-              }`}
+              className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center 
+                justify-center rounded-full border-4 border-white 
+                shadow-md transition-all duration-200 hover:scale-110 ${
+                  isSelected
+                    ? "scale-110 ring-2 ring-indigo-500 ring-offset-1"
+                    : ""
+                }`}
               style={{
                 backgroundColor: color.value,
               }}
             >
-              {isSelected && (
-                <Check className="h-5 w-5 text-white" />
-              )}
+              {isSelected && <Check className="h-5 w-5 text-white" />}
             </button>
           );
         })}
@@ -98,9 +91,7 @@ function SubjectColorPicker({ value, onChange, error }) {
         />
 
         <div>
-          <p className="font-medium text-slate-900">
-            {selectedColor.name}
-          </p>
+          <p className="font-medium text-slate-900">{selectedColor.name}</p>
 
           <p className="font-mono text-sm text-slate-500">
             {selectedColor.value}
@@ -110,11 +101,7 @@ function SubjectColorPicker({ value, onChange, error }) {
 
       {/* Error */}
 
-      {error && (
-        <p className="text-sm font-medium text-red-500">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-sm font-medium text-red-500">{error}</p>}
     </div>
   );
 }

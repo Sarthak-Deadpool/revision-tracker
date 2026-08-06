@@ -20,13 +20,13 @@ function SubjectModal({
   const isEditMode = mode === "edit";
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}  disablePointerDismissal>
+    <Dialog open={open} onOpenChange={onOpenChange} disablePointerDismissal>
       <DialogContent
-        className="sm:max-w-lg"
+        className="w-[95vw] max-w-md rounded-2xl p-5 sm:max-w-lg sm:p-6"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        <DialogHeader>
+        <DialogHeader className="space-y-1 pb-2">
           <DialogTitle>
             {isEditMode ? "Edit Subject" : "Create Subject"}
           </DialogTitle>
@@ -34,7 +34,7 @@ function SubjectModal({
           <DialogDescription>
             {isEditMode
               ? "Update your subject details."
-              : "Add a new subject to organize your topics and revisions."}
+              : "Add a new subject."}
           </DialogDescription>
         </DialogHeader>
 
