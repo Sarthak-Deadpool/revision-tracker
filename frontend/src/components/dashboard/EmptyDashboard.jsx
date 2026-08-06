@@ -2,7 +2,11 @@
 
 import { BookOpen, Plus } from "lucide-react";
 
-function EmptyDashboard({ onCreateSubject }) {
+import { useNavigate } from "react-router-dom";
+
+function EmptyDashboard({}) {
+
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-[70vh] items-center justify-center">
       <div className="max-w-lg text-center">
@@ -19,19 +23,18 @@ function EmptyDashboard({ onCreateSubject }) {
         </h2>
 
         <p className="mt-4 leading-7 text-slate-500">
-          Start your learning journey by creating your first subject.
-          Organize topics, revise using spaced repetition, and track
-          your mastery over time.
+          Start your learning journey by creating your first subject. Organize
+          topics, revise using spaced repetition, and track your mastery over
+          time.
         </p>
 
         {/* Button */}
 
         <button
-          onClick={onCreateSubject}
+          onClick={() => navigate("/dashboard/subjects?create=true")}
           className="mt-8 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-medium text-white transition hover:bg-orange-600"
         >
           <Plus className="h-5 w-5" />
-
           Create First Subject
         </button>
       </div>

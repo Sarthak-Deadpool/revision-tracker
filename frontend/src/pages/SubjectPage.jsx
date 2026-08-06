@@ -20,11 +20,11 @@ import { toast } from "sonner";
 
 import SubjectSkeleton from "@/components/subject/SubjectSkeleton";
 import EmptySubjects from "@/components/subject/EmptySubjects";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function SubjectPage() {
   const navigate = useNavigate();
-  
+  const [searchParams] = useSearchParams();
 
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +36,7 @@ function SubjectPage() {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const shouldOpen = searchParams.get("create") === "true";
   async function fetchSubject() {
     try {
       setLoading(true);
@@ -56,11 +57,21 @@ function SubjectPage() {
     setModalMode("create");
     setEditingSubject(null);
     setIsModalOpen(true);
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchSubject();
   }, []);
+
+  useEffect(() => {
+    if (!shouldOpen) return;
+
+    openCreateModal();
+
+    navigate("/dashboard/subjects", {
+      replace: true,
+    });
+  }, [shouldOpen, openCreateModal, navigate]);
 
   useEffect(() => {
     setPrimaryAction({
@@ -69,7 +80,7 @@ function SubjectPage() {
     });
 
     return () => setPrimaryAction(null);
-  }, [setPrimaryAction], openCreateModal);
+  }, [setPrimaryAction, openCreateModal]);
 
   const subjectDefaultValues = useMemo(() => {
     if (!editingSubject) return undefined;
@@ -87,7 +98,9 @@ function SubjectPage() {
       setIsModalOpen(false);
       await fetchSubject();
     } catch (error) {
-      console.error(error);
+      toast.error(
+        error?.response?.data?.message || "Failed to create subject.",
+      );
     }
   }
 
@@ -152,25 +165,6 @@ function SubjectPage() {
 
   return (
     <div className="space-y-6">
-      {/* <div className="flex items-center justify-end">
-        <div>
-          <h1 className="text-2xl font-bold">Subjects</h1>
-
-          <p className="text-slate-500">Organize your revision subjects.</p>
-        </div>
-
-        <button
-          onClick={() => {
-            setModalMode("create");
-            setEditingSubject(null);
-            setIsModalOpen(true);
-          }}
-          className="rounded-xl bg-orange-500 px-5 py-2 text-white transition hover:bg-orange-700"
-        >
-          Add Subject
-        </button>
-      </div> */}
-
       {loading ? (
         <SubjectSkeleton />
       ) : subjects.length === 0 ? (

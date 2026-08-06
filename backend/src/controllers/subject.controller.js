@@ -18,15 +18,15 @@ const createSubject = async (req, res) => {
       });
     }
 
-    const trimmedName = name.trim();
+    const normalizedName = name.trim().toLowerCase();
 
-    if (trimmedName.length < 2) {
+    if (normalizedName.length < 2) {
       return res.status(400).json({
         message: "Subject name must be at least 2 characters long.",
       });
     }
 
-    if (trimmedName.length > 50) {
+    if (normalizedName.length > 50) {
       return res.status(400).json({
         message: "Subject name cannot exceed 50 characters.",
       });
@@ -34,7 +34,7 @@ const createSubject = async (req, res) => {
 
     const subject = await Subject.create({
       user: req.user._id,
-      name: trimmedName,
+      name: normalizedName,
       color: color?.trim() || undefined,
       description: description?.trim() || undefined,
     });
@@ -179,27 +179,27 @@ const updateSubject = async (req, res) => {
     const updateData = {};
 
     if (name !== undefined) {
-      const trimmedName = name.trim();
+      const normalizedName = name.trim().toLowerCase();
 
-      if (!trimmedName) {
+      if (!normalizedName) {
         return res.status(400).json({
           message: "Subject name cannot be empty.",
         });
       }
 
-      if (trimmedName.length < 2) {
+      if (normalizedName.length < 2) {
         return res.status(400).json({
           message: "Subject name must be at least 2 characters long.",
         });
       }
 
-      if (trimmedName.length > 50) {
+      if (normalizedName.length > 50) {
         return res.status(400).json({
           message: "Subject name cannot exceed 50 characters.",
         });
       }
 
-      updateData.name = trimmedName;
+      updateData.name = normalizedName;
     }
 
     if (color !== undefined) {

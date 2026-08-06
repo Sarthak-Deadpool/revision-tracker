@@ -36,22 +36,22 @@ const menuItems = [
   },
   {
     name: "Calendar",
-    path: "/calendar",
+    path: "/dashboard/calendar",
     icon: CalendarDays,
   },
   {
     name: "Analytics",
-    path: "/analytics",
+    path: "/dashboard/analytics",
     icon: BarChart3,
   },
   {
     name: "Profile",
-    path: "/profile",
+    path: "/dashboard/profile",
     icon: User,
   },
   {
     name: "Settings",
-    path: "/settings",
+    path: "/dashboard/settings",
     icon: Settings,
   },
 ];

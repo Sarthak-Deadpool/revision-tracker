@@ -16,7 +16,8 @@ const VerifyEmailForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const email = location.state?.email;
+  const email =
+    location.state?.email || sessionStorage.getItem("verificationEmail");
 
   useEffect(() => {
     if (!email) {
@@ -45,6 +46,7 @@ const VerifyEmailForm = () => {
       });
 
       toast.success(response.message);
+      sessionStorage.removeItem("verificationEmail");
       navigate("/login");
     } catch (error) {
       toast.error(
@@ -59,7 +61,10 @@ const VerifyEmailForm = () => {
       <div className="flex justify-end">
         <button
           type="button"
-          onClick={() => navigate("/login")}
+          onClick={() => {
+            sessionStorage.removeItem("verificationEmail");
+            navigate("/login");
+          }}
           className="text-sm font-medium text-slate-600 transition hover:text-orange-500"
         >
           Back to Login

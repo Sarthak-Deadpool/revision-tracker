@@ -1,3 +1,5 @@
+/** @format */
+
 import { createContext, useContext, useMemo, useState } from "react";
 
 const AuthContext = createContext(null);
@@ -5,10 +7,10 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [user, setUser] = useState(() => {
-  const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
 
-  return storedUser ? JSON.parse(storedUser) : null;
-});
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const login = ({ token, user }) => {
     localStorage.setItem("token", token);
@@ -26,6 +28,12 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
+
   const value = useMemo(
     () => ({
       token,
@@ -33,15 +41,12 @@ export function AuthProvider({ children }) {
       isAuthenticated: !!token,
       login,
       logout,
+      updateUser,
     }),
-    [token, user]
+    [token, user],
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

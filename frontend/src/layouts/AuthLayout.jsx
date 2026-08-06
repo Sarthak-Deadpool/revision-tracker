@@ -5,22 +5,54 @@ import LeftPanel from "@/components/reusable-componets/LeftPannel";
 
 function AuthLayout() {
   return (
-    <main className="min-h-screen bg-[#15111A] lg:h-screen">
+    <main className="min-h-screen bg-slate-100">
       <div
-        className="mx-auto flex min-h-screen max-w-[1800px]
-        overflow-hidden bg-[#15111A]
-        lg:h-screen
-        lg:rounded-3xl
-        lg:shadow-[0_30px_80px_rgba(15,23,42,0.12)]"
+        className="
+          mx-auto
+          flex
+          min-h-screen
+          max-w-[1600px]
+          overflow-hidden
+          bg-white
+
+          lg:min-h-screen
+          
+          lg:shadow-2xl
+        "
       >
-        {/* LEFT SIDE */}
-        <section className="hidden bg-[#15111A] lg:flex lg:w-[55%]">
+        {/* Left Panel */}
+
+        <section
+          className="
+            hidden
+            lg:flex
+            lg:w-1/2
+            bg-[#15111A]
+          "
+        >
           <LeftPanel />
         </section>
 
-        {/* RIGHT SIDE */}
-        <section className="flex w-full bg-white lg:w-[45%] lg:rounded-l-[8%]">
-          <Outlet />
+        {/* Right Panel */}
+
+        <section
+          className="
+            flex
+            w-full
+            justify-center
+            bg-white
+
+            lg:w-1/2
+          "
+        >
+          <div
+            className="
+              w-full
+              max-w-162.5
+            "
+          >
+            <Outlet />
+          </div>
         </section>
       </div>
     </main>

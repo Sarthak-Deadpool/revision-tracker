@@ -11,7 +11,7 @@ function SubjectCard({ subject, onEdit, onDelete, onStudy }) {
     color,
     createdAt,
     topicCount = 0,
-    nextRevision = "--",
+   
   } = subject;
 
   const formattedDate = createdAt
@@ -83,13 +83,7 @@ function SubjectCard({ subject, onEdit, onDelete, onStudy }) {
               <span className="font-semibold text-slate-900">{topicCount}</span>
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-500">Next Revision</span>
-
-              <span className="font-semibold text-slate-900">
-                {nextRevision}
-              </span>
-            </div>
+            
 
             <div className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2 text-slate-500">

@@ -50,7 +50,7 @@ function DashboardPage() {
   }
 
   if (dashboard.stats.totalSubjects === 0) {
-    return <EmptyDashboard onCreateSubject={primaryAction?.onClick} />;
+    return <EmptyDashboard />;
   }
 
   return (

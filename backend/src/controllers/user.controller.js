@@ -9,6 +9,10 @@ const generateOTP = require("../utils/generateOTP.util");
 const sendEmail = require("../utils/sendEmail.util");
 const verificationEmail = require("../templates/verificationEmail");
 
+const Subject = require("../models/subject.model");
+const Topic = require("../models/topic.model");
+const Revision = require("../models/revision.model");
+
 const {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -63,8 +67,38 @@ const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
-      return res.status(409).json({
-        message: "User already exist",
+      // Account already verified
+      if (existingUser.isVerified) {
+        return res.status(409).json({
+          message: "User already exists.",
+        });
+      }
+
+      // Account exists but email is not verified
+      const { otp, hashedOTP, expiresAt } = generateOTP();
+
+      existingUser.name = trimmedName;
+      existingUser.password = await bcrypt.hash(password, 10);
+      existingUser.verificationOTP = hashedOTP;
+      existingUser.verificationOTPExpires = expiresAt;
+
+      await existingUser.save();
+
+      await sendEmail({
+        to: existingUser.email,
+        subject: "Verify Your Email",
+        html: verificationEmail(existingUser.name, otp),
+      });
+
+      return res.status(200).json({
+        message:
+          "Account already exists but is not verified. A new verification code has been sent to your email.",
+        data: {
+          id: existingUser._id,
+          name: existingUser.name,
+          email: existingUser.email,
+          isVerified: false,
+        },
       });
     }
 
@@ -162,6 +196,7 @@ const loginUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
       },
     });
   } catch (error) {
@@ -351,7 +386,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-
 //reset password
 const resetPassword = async (req, res) => {
   try {
@@ -438,9 +472,41 @@ const resetPassword = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
+    const [totalSubjects, totalTopics, totalCompletedRevisions] =
+      await Promise.all([
+        Subject.countDocuments({
+          user: req.user._id,
+        }),
+
+        Topic.countDocuments({
+          user: req.user._id,
+          isArchived: false,
+        }),
+
+        Revision.countDocuments({
+          user: req.user._id,
+          completedAt: {
+            $ne: null,
+          },
+        }),
+      ]);
     return res.status(200).json({
       message: "Profile fetched successfully",
-      user: req.user,
+      user: {
+        _id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        avatar: req.user.avatar,
+
+        streak: req.user.streak,
+        longestStreak: req.user.longestStreak,
+
+        createdAt: req.user.createdAt,
+
+        totalSubjects,
+        totalTopics,
+        totalCompletedRevisions,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -486,7 +552,7 @@ const updateProfile = async (req, res) => {
         });
       }
 
-      if (trimmedName.length < 2) {
+      if (trimmedName.length < 3) {
         return res.status(400).json({
           message: "Name must be at least 3 characters long",
         });
@@ -494,14 +560,13 @@ const updateProfile = async (req, res) => {
 
       if (trimmedName.length > 30) {
         return res.status(400).json({
-          message: "Name cannot exceed 50 characters",
+          message: "Name cannot exceed 30 characters",
         });
       }
+
+      req.user.name = trimmedName;
     }
 
-    if (name !== undefined) {
-      req.user.name = name.trim();
-    }
     if (avatarFile) {
       if (req.user.avatarPublicId) {
         await deleteFromCloudinary(req.user.avatarPublicId);
@@ -547,6 +612,7 @@ const changePassword = async (req, res) => {
         message: "Current password and new password are required",
       });
     }
+
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -561,7 +627,7 @@ const changePassword = async (req, res) => {
     );
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({
+      return res.status(400).json({
         message: "Current password is incorrect",
       });
     }

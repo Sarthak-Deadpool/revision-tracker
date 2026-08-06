@@ -20,6 +20,12 @@ import SubjectPage from "@/pages/SubjectPage";
 import TopicPage from "@/pages/TopicPage";
 import RevisionPage from "@/pages/RevisionPage";
 
+import ProfilePage from "@/pages/ProfilePage";
+import SettingsPage from "@/pages/SettingPage";
+
+import CalendarPage from "@/pages/CalendarPage";
+import AnalyticsPage from "@/pages/AnalyticsPage";
+import NotificationPage from "@/pages/NotificationPage";
 function AppRoutes() {
   return (
     <Routes>
@@ -42,6 +48,11 @@ function AppRoutes() {
           <Route path="topics" element={<TopicPage />} />
           <Route path="subjects/:subjectId/topics" element={<TopicPage />} />
           <Route path="revisions" element={<RevisionPage />} />
+          <Route path="calendar" element={<CalendarPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="notifications" element={<NotificationPage />} />
         </Route>
       </Route>
     </Routes>

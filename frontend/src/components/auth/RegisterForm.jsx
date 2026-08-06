@@ -6,14 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import registerSchema from "@/schemas/registerSchema";
 import { register as registerUser } from "@/api/authApi";
-import {toast} from "sonner"
-
+import { toast } from "sonner";
 
 import EmailInput from "../reusable-componets/EmailInput";
 import PasswordInput from "../reusable-componets/PasswordInput";
 import GradientButton from "../reusable-componets/GradientButton";
 import TextInput from "../reusable-componets/TextInput";
-
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -36,12 +34,14 @@ function RegisterForm() {
     try {
       await registerUser(data);
 
+      sessionStorage.setItem("verificationEmail", data.email);
+
       toast.success("Account created successfully!");
 
-      navigate("/verify-email",{
-        state:{
+      navigate("/verify-email", {
+        state: {
           email: data.email,
-        }
+        },
       });
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
@@ -49,9 +49,27 @@ function RegisterForm() {
   };
 
   return (
-    <div className="flex h-full flex-col px-6 py-6 sm:px-8 lg:px-20 lg:py-12">
+    <div
+      className="
+    flex
+    min-h-full
+    flex-col
+    px-5
+    py-6
+
+    sm:px-8
+
+    md:px-12
+    md:py-10
+
+    lg:px-16
+    lg:py-6
+
+    xl:px-20
+  "
+    >
       {/* Header */}
-      <div className="flex justify-end">
+      <div className="flex justify-end pb-2">
         <p className="text-sm text-slate-600">
           Already have an account?{" "}
           <Link
@@ -64,20 +82,39 @@ function RegisterForm() {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 items-center py-6 lg:py-8">
-        <div className="w-full max-w-lg">
-          <span className="text-3xl font-semibold uppercase text-orange-500 sm:text-4xl">
+      <div
+        className="
+    flex
+    flex-1
+    items-center
+    justify-center
+    py-4
+
+    md:py-8
+  "
+      >
+        <div className="w-full max-w-md md:max-w-lg">
+          <span
+            className="text-2xl
+            sm:text-4xl
+            lg:text-3xl font-semibold uppercase text-orange-500 "
+          >
             Create Account
           </span>
 
-          <p className="mt-2 text-base text-slate-500">
+          <p
+            className="mt-2 text-sm
+            sm:text-base
+            lg:text-lg text-slate-500"
+          >
             Create your Revision Tracker account and start building consistent
             study habits.
           </p>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="mt-6 space-y-3 sm:space-y-4"
+            className="mt-4
+            md:mt-8 space-y-4 md:space-y-5"
           >
             {/* Full Name */}
             <TextInput

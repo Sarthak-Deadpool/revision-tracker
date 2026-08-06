@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+ const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/?])[A-Za-z\d@$!%*?&^#()_+\-=\[\]{};':"\\|,.<>/?]{8,20}$/;
+
+
 export const registerSchema = z
   .object({
     name: z
@@ -7,7 +11,7 @@ export const registerSchema = z
       .trim()
       .min(1, "Full name is required")
       .min(3, "Full name must be at least 3 characters")
-      .max(50, "Full name cannot exceed 50 characters"),
+      .max(30, "Full name cannot exceed 30 characters"),
 
     email: z
       .string()
@@ -15,10 +19,10 @@ export const registerSchema = z
       .min(1, "Email is required")
       .email("Please enter a valid email address"),
 
-    password: z
-      .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters"),
+    password: z.string().regex(
+  passwordRegex,
+  "Password must be 8-20 characters long and include uppercase, lowercase, number, and special character.",
+),
 
     confirmPassword: z
       .string()
