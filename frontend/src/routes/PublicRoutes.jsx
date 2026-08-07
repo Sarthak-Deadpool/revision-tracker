@@ -1,13 +1,15 @@
-import { Route } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
-import HomePage from "../pages/HomePage";
+/** @format */
 
-function PublicRoutes() {
-  return (
-    <Route element={<MainLayout />}>
-      <Route path="/" element={<HomePage />} />
-    </Route>
-  );
+import { Navigate, Outlet } from "react-router-dom";
+
+function PublicRoute() {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Outlet />;
 }
 
-export default PublicRoutes;
+export default PublicRoute;
