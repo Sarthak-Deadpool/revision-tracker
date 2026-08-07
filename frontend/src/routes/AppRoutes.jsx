@@ -3,9 +3,10 @@
 import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
-import MainLayout from "../layouts/MainLayout";
 import HomePage from "../pages/HomePage";
+
 import AuthLayout from "../layouts/AuthLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
@@ -26,15 +27,19 @@ import SettingsPage from "@/pages/SettingPage";
 import CalendarPage from "@/pages/CalendarPage";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import NotificationPage from "@/pages/NotificationPage";
+
 import StudyTopicPage from "@/pages/StudyTopicPage";
 import StudyRevisionPage from "@/pages/StudyRevisionPage";
+
 function AppRoutes() {
   return (
     <Routes>
-      <Route element={<MainLayout />}>
+      {/* Public Landing Page */}
+      <Route element={<PublicRoute />}>
         <Route path="/" element={<HomePage />} />
       </Route>
 
+      {/* Authentication Pages */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -43,26 +48,38 @@ function AppRoutes() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
 
+      {/* Protected Pages */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
+
           <Route path="subjects" element={<SubjectPage />} />
+
           <Route path="topics" element={<TopicPage />} />
-          <Route path="subjects/:subjectId/topics" element={<TopicPage />} />
-          <Route path="revisions" element={<RevisionPage />} />
-          <Route path="calendar" element={<CalendarPage />} />
-          <Route path="analytics" element={<AnalyticsPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="notifications" element={<NotificationPage />} />
+
           <Route
-            path="/dashboard/topics/:topicId"
-            element={<StudyTopicPage />}
+            path="subjects/:subjectId/topics"
+            element={<TopicPage />}
           />
+
+          <Route path="topics/:topicId" element={<StudyTopicPage />} />
+
+          <Route path="revisions" element={<RevisionPage />} />
+
           <Route
-            path="/dashboard/revisions/:revisionId"
+            path="revisions/:revisionId"
             element={<StudyRevisionPage />}
           />
+
+          <Route path="calendar" element={<CalendarPage />} />
+
+          <Route path="analytics" element={<AnalyticsPage />} />
+
+          <Route path="notifications" element={<NotificationPage />} />
+
+          <Route path="profile" element={<ProfilePage />} />
+
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Route>
     </Routes>
