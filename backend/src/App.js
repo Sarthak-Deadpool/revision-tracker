@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Revision Tracker API");
 });
 
-app.use("*", (req, res) => {
+app.use((req, res) => {
   return res.status(404).json({
     message: "Route not found",
   });
