@@ -7,7 +7,6 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
- 
 });
 
 api.interceptors.request.use(
@@ -22,7 +21,7 @@ api.interceptors.request.use(
   },
 
   (error) => {
-    Promise.reject(error);
+    return Promise.reject(error);
   },
 );
 

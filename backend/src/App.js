@@ -12,13 +12,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }),
 );
 
 app.use(logger);
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/topics", topicRoutes);
@@ -29,4 +30,17 @@ app.get("/", (req, res) => {
   res.send("Welcome to Revision Tracker API");
 });
 
+app.use("*", (req, res) => {
+  return res.status(404).json({
+    message: "Route not found",
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  return res.status(500).json({
+    message: "Internal Server Error",
+  });
+});
 module.exports = app;

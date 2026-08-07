@@ -6,16 +6,21 @@ const app = require("./src/App");
 const connectDB = require("./src/config/db");
 const { startStreakCron } = require("./src/cron/streak.cron");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 async function startServer() {
-  await connectDB();
+  try {
+    await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
 
-  startStreakCron();
+    startStreakCron();
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
 }
 
 startServer();
