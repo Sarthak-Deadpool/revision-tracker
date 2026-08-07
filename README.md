@@ -325,7 +325,7 @@ Next Revision Generated Automatically
 
 ---
 
-# 🚀 Installation
+# Installation
 
 Clone Repository
 
@@ -351,7 +351,7 @@ npm run dev
 
 ---
 
-# ⚙️ Environment Variables
+# Environment Variables
 
 Backend
 
@@ -381,7 +381,7 @@ VITE_API_BASE_URL=
 
 ---
 
-# 🛣️ Roadmap
+# Roadmap
 
 - Calendar View
 - Analytics Dashboard
@@ -394,7 +394,7 @@ VITE_API_BASE_URL=
 
 ---
 
-# 🤝 Contributing
+# Contributing
 
 Contributions are welcome.
 
@@ -402,18 +402,16 @@ Feel free to fork the repository and submit a pull request.
 
 ---
 
-# 👨‍💻 Author
+# Author
 
 **Sarthak Arya**
 
 GitHub:
 https://github.com/Sarthak-Deadpool
 
-LinkedIn:
-(Add LinkedIn URL)
 
 ---
 
-# ⭐ Support
+# Support
 
 If you found this project useful, please consider giving it a ⭐ on GitHub.
