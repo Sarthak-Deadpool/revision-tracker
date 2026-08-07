@@ -26,6 +26,8 @@ import SettingsPage from "@/pages/SettingPage";
 import CalendarPage from "@/pages/CalendarPage";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import NotificationPage from "@/pages/NotificationPage";
+import StudyTopicPage from "@/pages/StudyTopicPage";
+import StudyRevisionPage from "@/pages/StudyRevisionPage";
 function AppRoutes() {
   return (
     <Routes>
@@ -53,6 +55,14 @@ function AppRoutes() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="notifications" element={<NotificationPage />} />
+          <Route
+            path="/dashboard/topics/:topicId"
+            element={<StudyTopicPage />}
+          />
+          <Route
+            path="/dashboard/revisions/:revisionId"
+            element={<StudyRevisionPage />}
+          />
         </Route>
       </Route>
     </Routes>

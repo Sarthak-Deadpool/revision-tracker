@@ -1,17 +1,10 @@
 /** @format */
 
-import { ArrowRight, CalendarClock, Brain, RotateCcw } from "lucide-react";
-
+import { ArrowRight, Brain, CalendarClock, RotateCcw } from "lucide-react";
 import TopicDropdown from "./TopicDropDown";
+import { useNavigate } from "react-router-dom";
 
-function TopicCard({
-  topic,
-  onEdit,
-  onDelete,
-  onArchive,
-  onUnarchive,
-  onStudy,
-}) {
+function TopicCard({ topic, onEdit, onDelete, onArchive, onUnarchive }) {
   const {
     name,
     difficulty,
@@ -22,6 +15,8 @@ function TopicCard({
     subject,
     isArchived,
   } = topic;
+
+  const navigate = useNavigate();
 
   const difficultyColor = {
     Easy: "bg-green-100 text-green-700",
@@ -38,17 +33,17 @@ function TopicCard({
     : "--";
 
   return (
-    <div className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-      {/* Left Accent */}
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      {/* Accent */}
       <div
-        className="absolute left-0 top-0 h-full w-2"
+        className="absolute left-0 top-0 h-full w-1.5"
         style={{
           backgroundColor: subject?.color || "#6366F1",
         }}
       />
 
-      <div className="flex h-full flex-col p-6 pl-8">
-        {/* ================= Header ================= */}
+      <div className="flex h-full flex-col p-5 pl-7">
+        {/* Header */}
 
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -56,7 +51,7 @@ function TopicCard({
               {name}
             </h2>
 
-            <p className="text-sm text-slate-500">
+            <p className="mt-0.5 line-clamp-1 text-sm text-slate-500">
               {subject?.name || "Unknown Subject"}
             </p>
           </div>
@@ -70,19 +65,17 @@ function TopicCard({
           />
         </div>
 
-        {/* Difficulty */}
+        {/* Tags */}
 
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           <span
-            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-              difficultyColor[difficulty]
-            }`}
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${difficultyColor[difficulty]}`}
           >
             {difficulty}
           </span>
 
           {isArchived && (
-            <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
               Archived
             </span>
           )}
@@ -90,27 +83,27 @@ function TopicCard({
 
         {/* Notes */}
 
-        <div className="mt-5 min-h-[72px]">
-          <p className="line-clamp-3 text-sm leading-6 text-slate-600">
+        <div className="mt-4 min-h-[52px]">
+          <p className="line-clamp-2 text-sm leading-6 text-slate-600">
             {notes || "No notes added yet."}
           </p>
         </div>
 
         <div className="mt-auto">
-          <div className="my-6 h-px bg-slate-200" />
+          <div className="my-5 border-t border-slate-200" />
 
-          {/* ================= Mastery ================= */}
+          {/* Mastery */}
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-500">Mastery</span>
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm text-slate-500">Mastery</span>
 
-              <span className="font-semibold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900">
                 {masteryLevel}%
               </span>
             </div>
 
-            <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+            <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
               <div
                 className="h-full rounded-full bg-indigo-600 transition-all duration-300"
                 style={{
@@ -120,9 +113,9 @@ function TopicCard({
             </div>
           </div>
 
-          <div className="my-6 h-px bg-slate-200" />
+          <div className="my-5 border-t border-slate-200" />
 
-          {/* ================= Stats ================= */}
+          {/* Stats */}
 
           <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
@@ -148,28 +141,27 @@ function TopicCard({
             </div>
           </div>
 
-          <div className="my-6 h-px bg-slate-200" />
-
-          {/* ================= Footer ================= */}
-
           {!isArchived && (
-            <button
-              type="button"
-              onClick={() => onStudy?.(topic)}
-              className="flex w-full items-center justify-center gap-2 rounded-xl py-3 font-medium text-white transition-all duration-300 hover:gap-3"
-              style={{
-                backgroundColor: subject?.color || "#6366F1",
-              }}
-            >
-              <Brain className="h-4 w-4" />
-              Study Topic
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+            <>
+              <div className="my-5 border-t border-slate-200" />
+
+              <button
+                type="button"
+                onClick={() => navigate(`/dashboard/topics/${topic._id}`)}
+                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:brightness-95"
+                style={{
+                  backgroundColor: subject?.color || "#6366F1",
+                }}
+              >
+                <Brain className="h-4 w-4" />
+                Study Topic
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </>
           )}
         </div>
       </div>
     </div>
   );
 }
-
 export default TopicCard;

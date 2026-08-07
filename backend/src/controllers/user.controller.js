@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const generateOTP = require("../utils/generateOTP.util");
 const sendEmail = require("../utils/sendEmail.util");
 const verificationEmail = require("../templates/verificationEmail");
+const passwordResetEmail = require("../templates/passwordResetEmail");
 
 const Subject = require("../models/subject.model");
 const Topic = require("../models/topic.model");
@@ -275,27 +276,40 @@ const verifyEmail = async (req, res) => {
 
 //resend otp
 
+/** @format */
+
 const resendVerificationOTP = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, type = "verify" } = req.body;
 
     const normalizedEmail = email?.trim().toLowerCase();
 
     if (!normalizedEmail) {
       return res.status(400).json({
-        message: "Email is required",
+        message: "Email is required.",
       });
     }
 
-    const user = await User.findOne({ email: normalizedEmail });
+    const allowedTypes = ["verify", "reset"];
+
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).json({
+        message: "Invalid OTP type.",
+      });
+    }
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    });
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: "User not found.",
       });
     }
 
-    if (user.isVerified) {
+    
+    if (type === "verify" && user.isVerified) {
       return res.status(400).json({
         message: "Email is already verified.",
       });
@@ -308,14 +322,27 @@ const resendVerificationOTP = async (req, res) => {
 
     await user.save();
 
+    const html =
+      type === "verify"
+        ? verificationEmail(user.name, otp)
+        : resetPasswordEmail(user.name, otp);
+
+    const subject =
+      type === "verify"
+        ? "Verify Your Email • Revision Tracker"
+        : "Reset Your Password • Revision Tracker";
+
     await sendEmail({
       to: user.email,
-      subject: "Verify Your Email",
-      html: verificationEmail(user.name, otp),
+      subject,
+      html,
     });
 
     return res.status(200).json({
-      message: "Verification OTP sent successfully.",
+      message:
+        type === "verify"
+          ? "Verification OTP sent successfully."
+          : "Password reset OTP sent successfully.",
     });
   } catch (error) {
     console.error(error);
@@ -371,7 +398,7 @@ const forgotPassword = async (req, res) => {
     await sendEmail({
       to: user.email,
       subject: "Reset Your Password",
-      html: verificationEmail(user.name, otp),
+      html: passwordResetEmail(user.name, otp),
     });
 
     return res.status(200).json({

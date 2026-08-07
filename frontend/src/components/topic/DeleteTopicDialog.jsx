@@ -19,44 +19,43 @@ function DeleteTopicDialog({
   loading = false,
 }) {
   return (
-    <AlertDialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
-      <AlertDialogContent className="sm:max-w-md">
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-xl text-red-600">
-            Delete Topic
-          </AlertDialogTitle>
+          <AlertDialogTitle>Delete Topic</AlertDialogTitle>
 
-          <AlertDialogDescription className="space-y-2 text-base text-slate-600">
-            <p>
-              Are you sure you want to delete this topic?
-            </p>
-
-            <p className="rounded-lg bg-slate-100 px-3 py-2 font-semibold text-slate-900">
-              {topic?.name}
-            </p>
-
-            <p>
-              This action cannot be undone. All revision history and progress
-              associated with this topic will be permanently removed.
-            </p>
+          <AlertDialogDescription>
+            This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
+        {/* Custom Content */}
+        <div className="space-y-3">
+          <p className="text-sm text-slate-600">
+            Are you sure you want to permanently delete this topic?
+          </p>
+
+          <div className="rounded-xl bg-slate-100 px-4 py-3 text-center font-semibold text-slate-900">
+            {topic?.name}
+          </div>
+
+          <p className="text-sm leading-6 text-slate-600">
+            All revision history, mastery progress, and notes associated with
+            this topic will be permanently removed. This action cannot be
+            undone.
+          </p>
+        </div>
+
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
 
           <AlertDialogAction
             disabled={loading}
+            className="bg-red-600 hover:bg-red-700"
             onClick={(e) => {
               e.preventDefault();
               onConfirm?.();
             }}
-            className="bg-red-600 hover:bg-red-700"
           >
             {loading ? "Deleting..." : "Delete Topic"}
           </AlertDialogAction>

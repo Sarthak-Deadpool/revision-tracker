@@ -27,8 +27,6 @@ import DeleteTopicDialog from "@/components/topic/DeleteTopicDialog";
 import ArchiveTopicDialog from "@/components/topic/ArchiveTopicDialog";
 import TopicToolbar from "@/components/topic/TopicToolbar";
 
-import StudyTopicDialog from "@/components/topic/StudyTopicDialog";
-
 function TopicPage() {
   const { subjectId } = useParams();
 
@@ -369,18 +367,6 @@ function TopicPage() {
         loading={archiveLoading}
         mode="archive"
         onConfirm={handleArchiveTopic}
-      />
-
-      <StudyTopicDialog
-        open={studyTopicOpen}
-        onOpenChange={(open) => {
-          setStudyTopicOpen(open);
-
-          if (!open) {
-            setSelectedTopic(null);
-          }
-        }}
-        topic={selectedTopic}
       />
     </div>
   );

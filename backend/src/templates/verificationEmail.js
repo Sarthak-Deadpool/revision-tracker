@@ -1,100 +1,26 @@
-const verificationEmail = (name, otp) => {
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8" />
-      </head>
+/** @format */
 
-      <body
-        style="
-          margin:0;
-          padding:0;
-          background:#f8fafc;
-          font-family:Arial,Helvetica,sans-serif;
-        "
-      >
-        <table
-          width="100%"
-          cellpadding="0"
-          cellspacing="0"
-          style="padding:40px 0;"
-        >
-          <tr>
-            <td align="center">
+const baseTemplate = require("./baseTemplate");
 
-              <table
-                width="600"
-                cellpadding="0"
-                cellspacing="0"
-                style="
-                  background:#ffffff;
-                  border-radius:10px;
-                  padding:40px;
-                "
-              >
+module.exports = (name, otp) =>
+  baseTemplate({
+    title: "Verify Your Email",
 
-                <tr>
-                  <td align="center">
-                    <h1 style="color:#f97316;">
-                      Revision Tracker
-                    </h1>
-                  </td>
-                </tr>
+    greeting: `Hello ${name},`,
 
-                <tr>
-                  <td>
-                    <h2>Hello ${name},</h2>
+    subtitle:
+      "Welcome to Revision Tracker! Please verify your email address using the code below.",
 
-                    <p>
-                      Thank you for registering with Revision Tracker.
-                    </p>
+    otp,
 
-                    <p>
-                      Please use the following OTP to verify your email address.
-                    </p>
+    footer:
+      "If you didn't create an account, you can safely ignore this email.",
 
-                    <div
-                      style="
-                        font-size:32px;
-                        font-weight:bold;
-                        letter-spacing:10px;
-                        text-align:center;
-                        color:#f97316;
-                        margin:30px 0;
-                      "
-                    >
-                      ${otp}
-                    </div>
+    headerColor: "#F97316",
 
-                    <p>
-                      This OTP is valid for
-                      <strong>10 minutes</strong>.
-                    </p>
+    otpBackground: "#FFF7ED",
 
-                    <p>
-                      If you didn't create this account,
-                      you can safely ignore this email.
-                    </p>
+    otpColor: "#EA580C",
 
-                    <br/>
-
-                    <p>
-                      Regards,<br/>
-                      Revision Tracker Team
-                    </p>
-
-                  </td>
-                </tr>
-
-              </table>
-
-            </td>
-          </tr>
-        </table>
-      </body>
-    </html>
-  `;
-};
-
-module.exports = verificationEmail;
+    icon: "📧",
+  });

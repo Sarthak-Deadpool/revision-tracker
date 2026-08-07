@@ -50,7 +50,7 @@ function TopicForm({
   }, [defaultValues, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {!showSubjectField && <input type="hidden" {...register("subject")} />}
 
       <div className="space-y-2">
@@ -62,10 +62,6 @@ function TopicForm({
           error={errors.name?.message}
           {...register("name")}
         />
-
-        <p className="text-sm text-slate-500">
-          Give your topic a meaningful name.
-        </p>
       </div>
 
       {/* Difficulty */}
@@ -100,9 +96,7 @@ function TopicForm({
           )}
         />
 
-        <p className="text-sm text-slate-500">
-          Select the current difficulty level of this topic.
-        </p>
+       
 
         {errors.difficulty && (
           <p className="text-sm text-red-500">{errors.difficulty.message}</p>
@@ -149,9 +143,7 @@ function TopicForm({
             )}
           />
 
-          <p className="text-sm text-slate-500">
-            Choose the subject this topic belongs to.
-          </p>
+        
 
           {errors.subject && (
             <p className="text-sm text-red-500">{errors.subject.message}</p>
@@ -171,13 +163,13 @@ function TopicForm({
 
         <textarea
           id="notes"
-          rows={5}
+          rows={4}
           placeholder="Write your revision notes..."
           className={`
             w-full resize-none rounded-2xl
             border border-slate-200
             bg-slate-50
-            px-4 py-3
+            px-4 py-2.5
             text-sm
             outline-none
             transition-all duration-200
@@ -192,9 +184,7 @@ function TopicForm({
           {...register("notes")}
         />
 
-        <p className="text-sm text-slate-500">
-          Add important formulas, concepts or reminders.
-        </p>
+       
 
         {errors.notes && (
           <p className="text-sm text-red-500">{errors.notes.message}</p>
@@ -203,7 +193,7 @@ function TopicForm({
 
       {/* Footer */}
 
-      <div className="flex justify-end gap-3 border-t pt-6">
+      <div className="flex justify-end gap-3 border-t pt-4">
         <GradientButton type="submit" disabled={isSubmitting}>
           {submitButtonText === "Create Topic" ? (
             <Plus className="h-4 w-4" />

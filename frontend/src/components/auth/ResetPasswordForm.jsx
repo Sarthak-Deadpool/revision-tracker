@@ -122,7 +122,6 @@ const ResetPasswordForm = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-6">
-            
             {/* OTP */}
             <div>
               <label className="mb-3 block text-sm font-medium text-slate-700">
@@ -165,7 +164,11 @@ const ResetPasswordForm = () => {
 
             {/* Resend OTP */}
             <div className="text-center pt-1">
-              <ResendOTPButton email={email} resendFunction={forgotPassword} />
+              <ResendOTPButton
+                email={email}
+                resendFunction={forgotPassword}
+                type="reset"
+              />
             </div>
           </form>
         </div>

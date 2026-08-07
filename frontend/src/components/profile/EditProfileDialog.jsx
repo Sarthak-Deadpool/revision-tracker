@@ -17,8 +17,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import GradientButton from "@/components/reusable-componets/GradientButton";
-
 const schema = z.object({
   name: z
     .string()
@@ -104,9 +102,25 @@ function EditProfileDialog({ open, onOpenChange, profile, onSubmit, loading }) {
         }
       }}
     >
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
+      <DialogContent
+        className="
+    w-[95vw]
+    max-w-md
+
+    rounded-3xl
+
+    p-6
+
+    sm:max-w-lg
+
+    max-h-[90vh]
+    overflow-y-auto
+  "
+      >
+        <DialogHeader className="border-b border-slate-200 pb-5">
+          <DialogTitle className="text-2xl font-bold text-slate-900">
+            Edit Profile
+          </DialogTitle>
 
           <DialogDescription>
             Update your profile information.
@@ -115,22 +129,56 @@ function EditProfileDialog({ open, onOpenChange, profile, onSubmit, loading }) {
 
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
           <div className="flex flex-col items-center">
-            <div className="group relative">
+            <div className="relative">
               <img
                 src={
                   preview ||
                   "https://ui-avatars.com/api/?name=" +
                     encodeURIComponent(profile?.name || "User")
                 }
-                alt="Avatar Preview"
-                className="h-32 w-32 rounded-full border-4 border-orange-100 object-cover shadow-md"
+                alt="Avatar"
+                className="
+        h-28
+        w-28
+        rounded-full
+        border-4
+        border-orange-100
+        object-cover
+        shadow-lg
+
+        sm:h-32
+        sm:w-32
+      "
               />
 
               <label
                 htmlFor="avatar"
-                className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/0 text-white opacity-0 transition-all duration-300 group-hover:bg-black/40 group-hover:opacity-100"
+                className="
+        absolute
+        bottom-1
+        right-1
+
+        flex
+        h-10
+        w-10
+        cursor-pointer
+        items-center
+        justify-center
+
+        rounded-full
+
+        bg-orange-500
+        text-white
+
+        shadow-lg
+
+        transition
+
+        hover:scale-105
+        hover:bg-orange-600
+      "
               >
-                <Camera className="h-6 w-6" />
+                <Camera className="h-5 w-5" />
               </label>
             </div>
 
@@ -142,37 +190,123 @@ function EditProfileDialog({ open, onOpenChange, profile, onSubmit, loading }) {
               onChange={handleImageChange}
             />
 
-            <p className="mt-3 text-xs text-slate-500">
-              JPG, PNG or WEBP • Max 2 MB
+            <p className="mt-4 text-center text-xs text-slate-500">
+              JPG, PNG or WEBP
+              <br />
+              Maximum file size 2 MB
             </p>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">Name</label>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-800">
+              Full Name
+            </label>
 
             <input
               {...register("name")}
               disabled={loading}
-              className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:border-orange-500 disabled:bg-slate-100"
+              placeholder="Enter your full name"
+              className="
+      h-12
+      w-full
+
+      rounded-2xl
+
+      border
+      border-slate-200
+
+      bg-slate-50
+
+      px-4
+
+      outline-none
+
+      transition-all
+
+      focus:border-orange-500
+      focus:bg-white
+      focus:ring-4
+      focus:ring-orange-100
+
+      disabled:bg-slate-100
+    "
             />
 
             {errors.name && (
-              <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+              <p className="text-sm text-red-500">{errors.name.message}</p>
             )}
           </div>
 
-          <div className="flex justify-end gap-3">
-            <GradientButton
+          <div className="flex gap-3 border-t border-slate-200 pt-6">
+            {/* Cancel */}
+
+            <button
               type="button"
-              variant="outline"
+              disabled={loading}
               onClick={() => onOpenChange(false)}
+              className="
+      flex-1
+      rounded-xl
+      border
+      border-slate-200
+      bg-white
+      px-4
+      py-3
+
+      text-sm
+      font-semibold
+      text-slate-700
+
+      transition-all
+      duration-200
+
+      hover:border-slate-300
+      hover:bg-slate-50
+
+      active:scale-[0.98]
+
+      disabled:cursor-not-allowed
+      disabled:opacity-50
+    "
             >
               Cancel
-            </GradientButton>
+            </button>
 
-            <GradientButton type="submit" disabled={loading}>
+            {/* Save */}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+      flex-1
+
+      rounded-xl
+
+      bg-orange-500
+
+      px-4
+      py-3
+
+      text-sm
+      font-semibold
+      text-white
+
+      shadow-sm
+
+      transition-all
+      duration-200
+
+      hover:bg-orange-600
+      hover:shadow-md
+
+      active:scale-[0.98]
+
+      disabled:cursor-not-allowed
+      disabled:bg-orange-300
+    "
+            >
               {loading ? "Saving..." : "Save Changes"}
-            </GradientButton>
+            </button>
           </div>
         </form>
       </DialogContent>

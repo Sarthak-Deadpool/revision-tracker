@@ -23,26 +23,49 @@ function LogoutDialog({ open, onOpenChange, onConfirm, loading }) {
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="mt-6 gap-3">
-          <GradientButton
+        <div className="mt-6 flex gap-3">
+          <button
             type="button"
-            variant="outline"
             disabled={loading}
             onClick={() => onOpenChange(false)}
-            className="flex-1"
+            className="
+      flex-1
+      rounded-xl
+      border
+      border-slate-200
+      bg-white
+      py-3
+      text-sm
+      font-semibold
+      text-slate-700
+      transition
+      hover:bg-slate-50
+      disabled:opacity-50
+    "
           >
             Cancel
-          </GradientButton>
+          </button>
 
-          <GradientButton
+          <button
             type="button"
             disabled={loading}
             onClick={onConfirm}
-            className="flex-1 bg-red-500 hover:bg-red-600"
+            className="
+      flex-1
+      rounded-xl
+      bg-red-500
+      py-3
+      text-sm
+      font-semibold
+      text-white
+      transition
+      hover:bg-red-600
+      disabled:opacity-50
+    "
           >
-            Logout
-          </GradientButton>
-        </DialogFooter>
+            {loading ? "Logging out..." : "Logout"}
+          </button>
+        </div>
       </DialogContent>
     </Dialog>
   );

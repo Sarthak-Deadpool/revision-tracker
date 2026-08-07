@@ -25,3 +25,8 @@ export const getNextRevision = async (topicId) => {
   const response = await api.get(`/revisions/${topicId}/next-revision`);
   return response.data;
 };
+
+export const getRevisionById = async (id) => {
+  const { data } = await api.get(`/revisions/${id}`);
+  return data;
+};

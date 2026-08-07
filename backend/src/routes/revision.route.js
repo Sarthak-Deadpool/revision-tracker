@@ -7,15 +7,16 @@ const {
   completeRevision,
   getTodayRevision,
   getRevisionHistory,
-  getNextRevision
+  getNextRevision,
+  getRevisionById,
 } = require("../controllers/revision.controller");
 
 const router = express.Router();
 
 router.get("/today", protect, getTodayRevision);
 router.patch("/:revisionId/complete", protect, completeRevision);
-router.get("/:topicId/revision-history", protect, getRevisionHistory );
+router.get("/:revisionId", protect, getRevisionById);
+router.get("/:topicId/revision-history", protect, getRevisionHistory);
 router.get("/:topicId/next-revision", protect, getNextRevision);
-
 
 module.exports = router;

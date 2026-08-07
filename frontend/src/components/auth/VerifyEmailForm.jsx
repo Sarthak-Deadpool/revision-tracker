@@ -169,6 +169,7 @@ const VerifyEmailForm = () => {
               <ResendOTPButton
                 email={email}
                 resendFunction={resendVerificationOTP}
+                type="verify"
               />
             </div>
           </form>

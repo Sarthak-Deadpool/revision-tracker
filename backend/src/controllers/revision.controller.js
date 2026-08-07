@@ -261,9 +261,56 @@ const getNextRevision = async (req, res) => {
   }
 };
 
+// fetch revision by id
+
+const getRevisionById = async (req, res) => {
+  try {
+    const { revisionId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(revisionId)) {
+      return res.status(400).json({
+        message: "Invalid revision ID.",
+      });
+    }
+
+    const revision = await Revision.findOne({
+      _id: revisionId,
+      user: req.user._id,
+      completedAt: null,
+    })
+      .populate("subject", "name color")
+      .populate({
+        path: "topic",
+        select:
+          "name difficulty notes masteryLevel totalRevisions lastRevisedAt isArchived",
+        match: {
+          isArchived: false,
+        },
+      });
+
+    if (!revision || !revision.topic) {
+      return res.status(404).json({
+        message: "Revision not found.",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Revision fetched successfully.",
+      revision,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   completeRevision,
   getTodayRevision,
   getRevisionHistory,
   getNextRevision,
+  getRevisionById,
 };

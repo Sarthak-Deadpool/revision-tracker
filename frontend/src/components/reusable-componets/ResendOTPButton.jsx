@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import useCountdown from "@/hooks/useCountdown";
 
-const ResendOTPButton = ({ email, resendFunction }) => {
+const ResendOTPButton = ({ email, resendFunction, type = "verify" }) => {
   const { timeLeft, isExpired, restart } = useCountdown(60);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +16,16 @@ const ResendOTPButton = ({ email, resendFunction }) => {
     try {
       setIsLoading(true);
 
-      const response = await resendFunction({ email });
+      const response = await resendFunction({
+        email,
+        type,
+      });
 
       toast.success(response.message);
+
       restart();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to resend otp");
+      toast.error(error?.response?.data?.message || "Failed to resend OTP.");
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +36,18 @@ const ResendOTPButton = ({ email, resendFunction }) => {
       type="button"
       onClick={handleResend}
       disabled={!isExpired || isLoading}
-      className="text-sm font-medium text-orange-500 transition hover:text-orange-700 disabled:cursor-not-allowed disabled:text-slate-400"
+      className="
+        text-sm
+        font-medium
+        text-orange-500
+        transition-colors
+        duration-200
+
+        hover:text-orange-600
+
+        disabled:cursor-not-allowed
+        disabled:text-slate-400
+      "
     >
       {isLoading
         ? "Sending..."
