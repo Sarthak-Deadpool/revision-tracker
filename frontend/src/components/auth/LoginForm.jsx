@@ -126,12 +126,14 @@ function LoginForm() {
             />
 
             <div className="flex justify-end">
+              {import.meta.env.VITE_ENABLE_EMAIL_VERIFICATION === "true" && (
               <Link
                 to="/forgot-password"
                 className="text-sm font-medium transition-colors  text-orange-500 hover:text-orange-700"
               >
                 Forgot Password?
               </Link>
+              )}
             </div>
 
             <GradientButton type="submit" disabled={isSubmitting}>

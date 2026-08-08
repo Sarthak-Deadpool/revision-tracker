@@ -32,11 +32,18 @@ function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
-      await registerUser(data);
+      const response = await registerUser(data);
+
+      const user = response.data;
+
+      toast.success(response.message || "Account created successfully!");
+
+      if (user.isVerified) {
+        navigate("/login");
+        return;
+      }
 
       sessionStorage.setItem("verificationEmail", data.email);
-
-      toast.success("Account created successfully!");
 
       navigate("/verify-email", {
         state: {

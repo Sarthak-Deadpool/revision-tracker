@@ -65,46 +65,74 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email: normalizedEmail });
+    const emailVerificationEnabled =
+      process.env.ENABLE_EMAIL_VERIFICATION === "true";
 
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
+
+
+    
     if (existingUser) {
-      // Account already verified
       if (existingUser.isVerified) {
         return res.status(409).json({
           message: "User already exists.",
         });
       }
 
-      // Account exists but email is not verified
-      const { otp, hashedOTP, expiresAt } = generateOTP();
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       existingUser.name = trimmedName;
-      existingUser.password = await bcrypt.hash(password, 10);
-      existingUser.verificationOTP = hashedOTP;
-      existingUser.verificationOTPExpires = expiresAt;
+      existingUser.password = hashedPassword;
 
-      await existingUser.save();
+      if (emailVerificationEnabled) {
+        const { otp, hashedOTP, expiresAt } = generateOTP();
 
-      await sendEmail({
-        to: existingUser.email,
-        subject: "Verify Your Email",
-        html: verificationEmail(existingUser.name, otp),
-      });
+        existingUser.verificationOTP = hashedOTP;
+        existingUser.verificationOTPExpires = expiresAt;
+
+        await existingUser.save();
+
+        await sendEmail({
+          to: existingUser.email,
+          subject: "Verify Your Email",
+          html: verificationEmail(existingUser.name, otp),
+        });
+      } else {
+        existingUser.isVerified = true;
+        existingUser.verificationOTP = null;
+        existingUser.verificationOTPExpires = null;
+
+        await existingUser.save();
+      }
 
       return res.status(200).json({
-        message:
-          "Account already exists but is not verified. A new verification code has been sent to your email.",
+        message: emailVerificationEnabled
+          ? "Account already exists but is not verified. A new verification code has been sent to your email."
+          : "Account updated successfully.",
         data: {
           id: existingUser._id,
           name: existingUser.name,
           email: existingUser.email,
-          isVerified: false,
+          isVerified: existingUser.isVerified,
         },
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const { otp, hashedOTP, expiresAt } = generateOTP();
+
+    let otp = null;
+    let hashedOTP = null;
+    let expiresAt = null;
+
+    if (emailVerificationEnabled) {
+      const generatedOTP = generateOTP();
+
+      otp = generatedOTP.otp;
+      hashedOTP = generatedOTP.hashedOTP;
+      expiresAt = generatedOTP.expiresAt;
+    }
 
     const user = await User.create({
       name: trimmedName,
@@ -112,16 +140,21 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       verificationOTP: hashedOTP,
       verificationOTPExpires: expiresAt,
+      isVerified: !emailVerificationEnabled,
     });
 
-    await sendEmail({
-      to: user.email,
-      subject: "Verify Your Email",
-      html: verificationEmail(user.name, otp),
-    });
+    if (emailVerificationEnabled) {
+      await sendEmail({
+        to: user.email,
+        subject: "Verify Your Email",
+        html: verificationEmail(user.name, otp),
+      });
+    }
 
     return res.status(201).json({
-      message: "User Registered successfully",
+      message: emailVerificationEnabled
+        ? "User registered successfully. Please verify your email."
+        : "User registered successfully.",
       data: {
         id: user._id,
         name: user.name,
@@ -131,6 +164,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     return res.status(500).json({
       message: "Internal Server Error",
     });
@@ -308,7 +342,6 @@ const resendVerificationOTP = async (req, res) => {
       });
     }
 
-    
     if (type === "verify" && user.isVerified) {
       return res.status(400).json({
         message: "Email is already verified.",
