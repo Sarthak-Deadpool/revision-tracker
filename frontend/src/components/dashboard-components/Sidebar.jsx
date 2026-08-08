@@ -83,12 +83,12 @@ function Sidebar() {
         {/* Logo */}
 
         <div className="flex items-center justify-between border-b border-slate-200 p-6">
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">
-              Revision Tracker
-            </h1>
-
-            <p className="mt-1 text-sm text-slate-500">Study Smarter</p>
+          <div className="flex items-center px-5 py-0">
+            <img
+              src="/logo.png"
+              alt="Revision Tracker"
+              className="h-10  ml-6 scale-400 w-auto object-contain"
+            />
           </div>
 
           <button
