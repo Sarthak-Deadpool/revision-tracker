@@ -78,6 +78,7 @@ const createTopic = async (req, res) => {
 
     const scheduledDate = new Date();
     scheduledDate.setDate(scheduledDate.getDate() + 1);
+    scheduledDate.setHours(0,0,0,0);
 
     await Revision.create(
       [

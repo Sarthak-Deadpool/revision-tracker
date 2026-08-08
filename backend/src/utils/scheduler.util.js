@@ -50,6 +50,7 @@ const calculateNextRevision = ({
   const nextScheduledDate = new Date();
 
   nextScheduledDate.setDate(nextScheduledDate.getDate() + nextInterval);
+  nextScheduledDate.setHours(0,0,0,0);
 
   return {
     nextEaseFactor,
