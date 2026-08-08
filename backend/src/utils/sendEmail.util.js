@@ -1,14 +1,24 @@
-const nodemailer = require("nodemailer");
+/** @format */
 
 const transporter = require("../config/mail");
 
 const sendEmail = async ({ to, subject, html }) => {
-  await transporter.sendMail({
-    from: `"Revision Tracker" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: `"Revision Tracker" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+
+    console.log("Email sent successfully:", info.messageId);
+
+    return info;
+  } catch (error) {
+    console.error("Email sending failed:", error);
+
+    throw error;
+  }
 };
 
 module.exports = sendEmail;
