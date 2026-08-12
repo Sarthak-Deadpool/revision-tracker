@@ -21,6 +21,31 @@ const completeRevisionService = async ({ revision, rating, session }) => {
     throw new Error("Topic not found");
   }
 
+  const nextMastery = Math.min(
+    calculateMastery({
+      currentMastery: topic.masteryLevel,
+      rating,
+    }),
+    100,
+  );
+
+  const nextRevisionNumber = revision.revisionNumber + 1;
+
+  topic.masteryLevel = nextMastery;
+  topic.totalRevisions = nextRevisionNumber;
+  topic.lastRevisedAt = revision.completedAt;
+
+  await updateUserStreak({
+    userId: revision.user,
+    session,
+  });
+
+  if (nextMastery >= 100) {
+    await topic.save({ session });
+
+    return;
+  }
+
   const { nextEaseFactor, nextInterval, nextRepetition, nextScheduledDate } =
     calculateNextRevision({
       easeFactor: topic.currentEaseFactor,
@@ -29,19 +54,9 @@ const completeRevisionService = async ({ revision, rating, session }) => {
       rating,
     });
 
-  const nextMastery = calculateMastery({
-    currentMastery: topic.masteryLevel,
-    rating,
-  });
-
-  const nextRevisionNumber = revision.revisionNumber + 1;
-
   topic.currentEaseFactor = nextEaseFactor;
   topic.currentInterval = nextInterval;
   topic.currentRepetition = nextRepetition;
-  topic.masteryLevel = nextMastery;
-  topic.totalRevisions = nextRevisionNumber;
-  topic.lastRevisedAt = revision.completedAt;
 
   await topic.save({ session });
 
@@ -65,11 +80,6 @@ const completeRevisionService = async ({ revision, rating, session }) => {
     ],
     { session },
   );
-
-  await updateUserStreak({
-    userId: revision.user,
-    session,
-  });
 };
 
 module.exports = { completeRevisionService };
