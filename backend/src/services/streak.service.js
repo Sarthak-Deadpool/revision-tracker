@@ -5,7 +5,7 @@ const User = require("../models/user.model");
 
 const updateUserStreak = async ({ userId, session }) => {
   const endOfToday = new Date();
-  endOfToday.setHours(11, 59, 59, 999);
+  endOfToday.setHours(23, 59, 59, 999);
 
   const pendingRevisionCount = await Revision.aggregate([
     {
@@ -36,7 +36,7 @@ const updateUserStreak = async ({ userId, session }) => {
     {
       $count: "count",
     },
-  ]);
+  ]).session(session);
 
   const count = pendingRevisionCount[0]?.count || 0;
 
