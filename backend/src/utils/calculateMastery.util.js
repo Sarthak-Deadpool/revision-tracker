@@ -5,15 +5,15 @@ const calculateMastery = ({ currentMastery, rating }) => {
 
   switch (rating) {
     case "Again":
-      nextMastery = Math.max(0, currentMastery - 5);
+      nextMastery = Math.max(0, currentMastery +5);
       break;
 
     case "Good":
-      nextMastery = Math.min(100, currentMastery + 3);
+      nextMastery = Math.min(100, currentMastery + 10);
       break;
 
     case "Easy":
-      nextMastery = Math.min(100, currentMastery + 5);
+      nextMastery = Math.min(100, currentMastery + 15);
       break;
 
     default:
