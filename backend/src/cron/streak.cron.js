@@ -39,3 +39,5 @@ const startStreakCron = () => {
     },
   );
 };
+module.exports = { startStreakCron };
+
